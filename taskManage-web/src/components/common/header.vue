@@ -7,7 +7,7 @@
           幼儿园管理后台
         </el-col>
         <el-col :span="12">
-          <span>李东华</span>
+          <span v-if="onlineUser.nickName">{{ onlineUser.nickName }}</span>
           <el-dropdown @command="handleDrop">
             <span class="el-dropdown-link">
               <!-- <img :src="userPath" v-if="userPath" alt=""> -->
@@ -28,16 +28,20 @@
 export default {
   data () {
     return {
-      editPasswordFlag: false
+      editPasswordFlag: false,
+      onlineUser: {}
     }
   },
   methods: {
     handleDrop (e) {
-      console.log(e)
       if (e * 1 === 3) {
+        window.localStorage.removeItem('token')
         this.$router.replace('/login')
       }
     }
+  },
+  mounted () {
+    this.onlineUser = JSON.parse(window.localStorage.getItem('onlineUser'))
   }
 }
 </script>

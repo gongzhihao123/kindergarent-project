@@ -8,15 +8,13 @@
   </div>
 </template>
 <script>
-import Menu from '@/components/adminManage/menu.vue'
-import Header from '@/components/common/header.vue'
 export default {
   data () {
     return {}
   },
   components: {
-    Menu,
-    Header
+    Menu: () => import('../components/adminManage/menu.vue'),
+    Header: () => import('../components/common/header.vue')
   }
 }
 </script>
