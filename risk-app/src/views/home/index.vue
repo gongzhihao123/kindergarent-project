@@ -1,8 +1,9 @@
 <template>
   <div class="home">
-    <van-nav-bar title="安全隐患报修"  left-arrow>
+    <van-nav-bar title="安全隐患列表"  left-arrow @click-left="onClickLeft">
       <template #right>
-        <van-button type="info" size="mini" @click="goRepair">我要报修</van-button>
+        <!-- <van-button type="info" size="mini" @click="goRepair">我要添加</van-button> -->
+        <van-button type="info" icon="plus" size="mini" @click="goRepair">添加</van-button>
       </template>
     </van-nav-bar>
     <div class="home-container">
@@ -25,10 +26,18 @@
               <li v-for="(item, index) in riskList" :key="index" >
                 <dl>
                   <dt>{{ index + 1 }}</dt>
-                  <dd>{{ item.title }}</dd>
+                  <dd>
+                    <p>{{ item.title }}</p>
+                    <span>责任人：{{item.adminUserName}}</span>
+                  </dd>
                 </dl>
-                <van-button v-if="!normalButtonFlag" :type="handleButton(item) ? 'info' : 'warning'" size="small" @click="goHandle(item)">{{ handleButton(item) ? '查看' : '处理' }}</van-button>
-                <van-button v-if="normalButtonFlag" type="info" size="small" @click="goHandle(item)">查看</van-button>
+                <van-button v-if="normalButtonFlag * 1 === 2" :type="handleButton(item) ? 'info' : 'warning'" size="small" @click="goHandle(item, 1)">{{ handleButton(item) ? '查看' : '确认' }}</van-button>
+                <div v-if="normalButtonFlag * 1 === 1">
+                  <van-button :type="quanxiankongzhiButton(item) ? 'info' : 'warning'" size="small" @click="goHandle(item, 2)">{{ quanxiankongzhiButton(item) ? '查看' : '确认' }}</van-button>
+                </div>
+                <div v-if="normalButtonFlag * 1 === 3">
+                  <van-button :type="zhurenButton(item) ? 'info' : 'warning'" size="small" @click="goHandle(item, 3)">{{ zhurenButton(item) ? '查看' : '确认' }}</van-button>
+                </div>
                 <!-- <van-button type="info" size="small">查看</van-button> -->
               </li>
             </ul>
@@ -57,10 +66,14 @@ export default {
       list: [],
       loading: false,
       finished: false,
-      normalButtonFlag: false
+      normalButtonFlag: 1
     }
   },
   methods: {
+    // 返回主页
+    onClickLeft () {
+      window.location.href = 'http://39.104.113.97'
+    },
     changePicker (id, val) {
       this.handleType = id
       this.changePickerFlag = val * 1
@@ -93,8 +106,16 @@ export default {
       this.$router.push('/repair')
     },
     // 去处理详情页
-    goHandle (item) {
-      this.$router.push({ path: '/dispose', query: { isShowCurrentPeople: false, status: item.status, type: item.type, title: item.title, id: item.id } })
+    goHandle (item, index) {
+      let isShowCurrentPeople = false
+      if (index * 1 === 1) {
+        isShowCurrentPeople = this.handleButton(item)
+      } else if (index * 1 === 2) {
+        isShowCurrentPeople = this.quanxiankongzhiButton(item)
+      } else {
+        isShowCurrentPeople = this.zhurenButton(item)
+      }
+      this.$router.push({ path: '/dispose', query: { isShowCurrentPeople: isShowCurrentPeople, status: item.status, type: item.type, title: item.title, id: item.id } })
     },
     // 获取状态列表
     getStatusDict() {
@@ -150,13 +171,42 @@ export default {
         }
       } else if (item.status * 1 === 1) {
         // 处理中
-        buttonFlag = false
+        buttonFlag = true
       } else if (item.status * 1 === 2) {
         // 已完成
         buttonFlag = true
       }
       return buttonFlag
     },
+    // 普通用户权限按钮显示
+    quanxiankongzhiButton (item) {
+      let quanButtonFlag = true
+      if (this.handleStatus * 1 !== 2) {
+        let loginUserId = window.localStorage.getItem('loginUserId')
+        if (item.adminUserId * 1 === loginUserId * 1) {
+          quanButtonFlag = false
+        } else {
+          quanButtonFlag = true
+        }
+        if (item.status * 1 === 1) {
+          quanButtonFlag = true
+        }
+      }
+      return quanButtonFlag
+    },
+    // 主任显示按钮
+    zhurenButton (item) {
+      let zhurenButtonFlag = true
+      if (this.handleStatus * 1 === 0) {
+        zhurenButtonFlag = true
+      } else if (this.handleStatus * 1 === 1) {
+        zhurenButtonFlag = false
+      } else {
+        zhurenButtonFlag = true
+      }
+      return zhurenButtonFlag
+    },
+    // 验证权限
     judgeAuth (string) {
       let arr = this.authority.filter(item => item.authority === string)
       if (arr.length > 0) {
@@ -174,10 +224,12 @@ export default {
     if (!this.judgeAuth('ROLE_DIRECTOR')){
       if (this.judgeAuth('ROLE_NORMAL')) {
         // 普通用户ROLE_NORMAL
-        this.normalButtonFlag = true
+        this.normalButtonFlag = 1
       } else {
-        this.normalButtonFlag = false
+        this.normalButtonFlag = 2
       }
+    } else {
+      this.normalButtonFlag = 3
     }
     
   }
@@ -186,13 +238,18 @@ export default {
 <style lang="scss">
 .home {
   .van-nav-bar {
-    .van-icon {
-      color: #000;
+    .van-nav-bar__left {
+      .van-icon {
+        color: #000;
+      }
     }
     .van-nav-bar__right {
-      .van-button {
-        padding: 10px 12px;
-        border-radius: 12px;
+      .van-icon {
+        color: #fff;
+      }
+      .van-button--mini {
+        padding: 5px 10px;
+        border-radius: 5px;
       }
     }
   }
@@ -204,21 +261,18 @@ export default {
           justify-content: space-around;
           background: #fff;
           .van-button {
-            border: 1PX solid #ccc;
             background: #fff;
-            border-radius: 20px;
+            border: none;
           }
           .van-button-activity {
-            background: #1989fa;
-            border: 1PX solid #1989fa;
-            color: #fff;
+            border-bottom: 3PX solid #1989fa;
           }
         }
         .van-tab__pane {
           .van-list {
             > ul {
               li {
-                padding: 8px 10px;
+                padding: 12px 10px;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
@@ -238,6 +292,11 @@ export default {
                     white-space:nowrap;/* 不换行 */
                     overflow:hidden;
                     text-overflow:ellipsis;
+                    > span {
+                      margin-top: 3px;
+                      font-size: 12px;
+                      color: #666;
+                    }
                   }
                 }
                 .van-button {

@@ -1,6 +1,6 @@
 <template>
   <div class="repair">
-    <van-nav-bar title="报修新隐患" left-arrow @click-left="goHome"></van-nav-bar>
+    <van-nav-bar title="新的工作" left-arrow @click-left="goHome"></van-nav-bar>
     <van-cell-group>
       <van-field v-model="title" label="标题" clearable placeholder="请输入标题" />
       <van-field v-model="newWorkLogDto.remark" rows="3" autosize label="描述" type="textarea" placeholder="请输入描述" />
@@ -34,7 +34,9 @@ export default {
       title: '',
       newWorkLogDto: {
         remark: '',
-        attachmentList: []
+        attachmentList: [],
+        toUserId: '',
+        toUserName: ''
       },
       fileList: [],
       temUploadFile: [],
@@ -117,9 +119,9 @@ export default {
     // 表单提交
     onConfirm () {
       if (this.checkFrom()) {
+        this.newWorkLogDto.toUserId = this.nowHandleUserId
+        this.newWorkLogDto.toUserName = this.nowHandleUserName
         apiAddWork({
-          nowUserId: this.nowHandleUserId,
-          nowUserName: this.nowHandleUserName,
           newWorkLogDto: this.newWorkLogDto,
           title: this.title
         })

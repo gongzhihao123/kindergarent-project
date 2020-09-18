@@ -57,23 +57,20 @@
           </h3>
           <div class="logContent">
             <div class="imgBox" v-for=" imgList in item.riskLogImageList " :key="imgList.id">
-              <div v-if="item.riskLogImageList.path" >
-                <img src="./../../assets/logo.png" alt="">
+              <div v-if="imgList.path" class="imgBoxShow" >
+                <img :src="'http://39.104.113.97/static/' + imgList.path" @click.stop="changeImg(imgList)" alt="">
               </div>
+              <van-overlay :show="imgShow" @click="imgShow = false">
+                <div class="wrapper previewImg">
+                  <div class="previewImgBox">
+                    <img :src="imgUrl" alt="">
+                  </div>
+                </div>
+              </van-overlay>
             </div>
             <p>{{ item.riskLog.remark }}</p>
           </div>
         </van-step>
-        <!-- <van-step>
-          <h3>
-            A负责人：2020-05-14 09:12 （1小时23分钟）
-          </h3>
-          <div>
-            <img src="./../../assets/logo.png" alt="">
-            <p>已申报，案件名称：<b>关于教室窗户无法正常上锁的问题</b></p>
-          </div>
-          <span>系统指派给：A负责人</span>
-        </van-step> -->
       </van-steps>
     </div>
   </div>
@@ -102,10 +99,18 @@ export default {
       declaredId: '',
       declaredList: [],
       declaredPicker: false,
-      riskLogList: []
+      riskLogList: [],
+      imgShow: false,
+      imgUrl: ''
     }
   },
   methods: {
+    // 预览img
+    changeImg (item) {
+      this.imgUrl = ''
+      this.imgUrl = 'http://39.104.113.97/static/' + item.path
+      this.imgShow = true
+    },
     // 返回上一页
     goBack () {
       this.$router.go(-1)
@@ -428,8 +433,32 @@ export default {
               .imgBox {
                 display: inline-flex;
                 width: 31%;
-                > div {
-                  margin: 0 6px ;
+                > .imgBoxShow {
+                  display: inline-flex;
+                  height: 100px;
+                  width: 100%;
+                  margin: 0 6px;
+                  overflow: hidden;
+                  > img {
+                    width: 100%;
+                  }
+                }
+                .van-overlay {
+                  z-index: 22;
+                  margin: 0;
+                  background: rgba($color: #000, $alpha: .4);
+                  .previewImg {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 100%;
+                    margin: 0;
+                    .previewImgBox {
+                      > img {
+                        width: 100%;
+                      }
+                    }
+                  }
                 }
               }
               p {

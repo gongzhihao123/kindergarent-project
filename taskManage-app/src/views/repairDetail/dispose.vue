@@ -36,33 +36,25 @@
           <div>
             <div class="imgBox" v-for=" imgList in item.workLogAttachmentList " :key="imgList.id">
               <div v-if="imgList.filepath" >
-                <div class="fileBox" v-if="!checkIsImg(imgList.filename)" @click="downUploadFile(imgList)">
-                  <img src="imgList.filepath" alt="">
-                  <span>{{ imgList.filename }}</span>
+                <div class="fileBox" @click="downUploadFile(imgList)">
+                  <!-- <img src="imgList.filepath" alt=""> -->
+                  <span style="color: #576B95;">{{ imgList.filename }}</span>
                 </div>
-                <img v-if="checkIsImg(imgList.filename)" src="./../../assets/logo.png" alt="" @click="downUploadFile(item)">
+                <!-- <img v-if="checkIsImg(imgList.filename)" src="./../../assets/logo.png" alt="" @click="downUploadFile(item)"> -->
               </div>
             </div>
             <p>{{ item.workLog.remark }}</p>
           </div>
-          <span>指派给：<i>{{ item.workLog.toUserName }}</i></span>
+          <span v-if="item.workLog.toUserName">指派给：<i>{{ item.workLog.toUserName }}</i></span>
         </van-step>
-        <!-- <van-step>
-          <h3>
-            A负责人：2020-05-14 09:12 （1小时23分钟）
-          </h3>
-          <div>
-            <img src="./../../assets/logo.png" alt="">
-            <p>已申报，案件名称：<b>关于教室窗户无法正常上锁的问题</b></p>
-          </div>
-          <span>指派给：<i>A负责人</i></span>
-        </van-step> -->
       </van-steps>
     </div>
   </div>
 </template>
 <script>
 import { apiWorkHandle, apiUserlist, apiUploadFile, apiDelUploadFile, apiWorkLog } from '@/services/api/index'
+import { Toast } from 'vant'
+// import { downFile } from '@/lib/downFile.js'
 export default {
   data () {
     return {
@@ -98,6 +90,11 @@ export default {
     },
     // 处理提交
     handleConfirm () {
+      let titleTest = /^[\s\S]{6,}$/
+      if (!titleTest.test(this.remark)) {
+        this.$toast('内容最少6个字符')
+        return
+      }
       apiWorkHandle(this.workId, {
         attachmentList: this.attachmentList,
         endFlag: this.endFlag,
@@ -109,7 +106,9 @@ export default {
           if (res.status === 201) {
             this.$router.replace('/home')
           } else {
-            console.log(res.response)
+            if (res.response) {
+              this.$toast(res.response.data.message)
+            }
           }
         })
     },
@@ -149,36 +148,45 @@ export default {
     },
     // 下载上传的附件
     downUploadFile (data) {
-      let token = window.localStorage.getItem('accessToken')
-      let HTP = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '')
-      var url = HTP + '/workLogAttachment/attachment?filepath=' + data.filepath
-      window.open()
-      var xhr = new XMLHttpRequest();
-        //GET请求,请求路径url,async(是否异步)
-        xhr.open('GET', url, true);
-        //设置请求头参数的方式,如果没有可忽略此行代码
-        xhr.setRequestHeader("Authorization", token);
-        //设置响应类型为 blob
-        xhr.responseType = 'blob';
-        //关键部分
-        xhr.onload = function (e) {
-            //如果请求执行成功
-            if (this.status == 200) {
-                var blob = this.response;
-                var filename = data.filename;//这个名字可以自定义或者根据后端的返回值设置
-                var a = document.createElement('a');  //创建一个`a`标签
-                // blob.type = "application/octet-stream"; //如果类型是这个就可以不同设置
-                //创键临时url对象
-                var url = URL.createObjectURL(blob);
-                a.href = url;
-                a.download=filename;
-                a.click();
-                //释放之前创建的URL对象
-                window.URL.revokeObjectURL(url);
-            }
-        };
-        //发送请求
-        xhr.send()
+	    // downFile(data, that)
+      // let HTP = window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '')
+      var url = 'http://39.104.113.97' + '/static/' + data.filepath
+      window.location.href = url
+      // Toast.loading({
+      //   duration: 0,
+      //   mask: false,
+      //   forbidClick: true,
+      //   message: '加载中...'
+      // })
+      // var url = 'http://39.104.113.97' + '/static/' + data.filepath
+      // // window.location.href = url
+      // var xhr = new XMLHttpRequest()
+      // // GET请求,请求路径url,async(是否异步)
+      // xhr.open('GET', url, true)
+      // // 设置请求头参数的方式,如果没有可忽略此行代码
+      // // xhr.setRequestHeader('Authorization', token)
+      // // 设置响应类型为 blob
+      // xhr.responseType = 'blob'
+      // // 关键部分
+      // xhr.onload = function (e) {
+      //   // 如果请求执行成功
+      //   Toast.clear()
+      //   if (this.status * 1 === 200) {
+      //     var blob = this.response
+      //     var filename = data.filename// 这个名字可以自定义或者根据后端的返回值设置
+      //     var a = document.createElement('a') // 创建一个`a`标签
+      //     // blob.type = "application/octet-stream"; //如果类型是这个就可以不同设置
+      //     // 创键临时url对象
+      //     var url = URL.createObjectURL(blob)
+      //     a.href = url
+      //     a.download = filename
+      //     a.click()
+      //     // 释放之前创建的URL对象
+      //     window.URL.revokeObjectURL(url)
+      //   }
+      // }
+      // // 发送请求
+      // xhr.send()
     },
     getUserList () {
       // 指派人列表

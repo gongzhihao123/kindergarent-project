@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <van-nav-bar title="工作任务管理"  left-arrow>
+    <van-nav-bar title="工作任务管理"  left-arrow @click-left="onClickLeft">
       <template #right>
         <van-button type="info" icon="plus" size="mini" @click="goRepair">添加</van-button>
       </template>
@@ -51,6 +51,10 @@ export default {
     }
   },
   methods: {
+    // 返回主页
+    onClickLeft () {
+      window.location.href = 'http://39.104.113.97'
+    },
     // 切换状态
     changePicker (val) {
       this.changePickerFlag = val * 1

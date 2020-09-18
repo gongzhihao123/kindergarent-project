@@ -2,7 +2,7 @@
   <div class="login">
     <div class="loginMain">
       <img src="./../assets/img/loginBg.png" alt="">
-      <h1>你好，<br>欢迎使用报修平台</h1>
+      <h1>你好，<br>欢迎使用幼儿园移动办公平台</h1>
       <ul>
         <li>
           <van-field class="userNameField" v-model="username" label="" placeholder="请输入账号" />
@@ -82,6 +82,7 @@ export default {
             if (res.status === 200) {
               window.localStorage.setItem('accessToken', res.data.token)
               window.localStorage.setItem('auth', JSON.stringify(res.data.auth))
+              window.localStorage.setItem('loginUserId', res.data.onlineUser.id)
               this.$router.replace('/home')
             } else if (res.response) {
               this.$toast(res.response.data.message)

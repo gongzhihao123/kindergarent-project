@@ -1,6 +1,6 @@
 <template>
   <div class="repair">
-    <van-nav-bar title="报修新隐患" left-arrow @click-left="goHome"></van-nav-bar>
+    <van-nav-bar title="添加新隐患" left-arrow @click-left="goHome"></van-nav-bar>
     <van-cell-group>
       <van-field v-model="title" label="标题" clearable placeholder="请输入标题" />
       <van-field v-model="newRiskLogDto.remark" rows="3" autosize label="描述" type="textarea" placeholder="请输入描述" />
@@ -9,7 +9,7 @@
           <van-uploader  v-model="temUploadFile" :after-read="afterRead" :before-delete="delUpload" multiple />
         </template>
       </van-cell>
-      <van-field label="所属区域" v-model="area" placeholder="点击选择区域" @click="areaPicker = true" readonly />
+      <van-field class="beLongArea" label="所属区域" v-model="area" placeholder="点击选择区域" @click="areaPicker = true" readonly />
       <van-popup v-model="areaPicker" position="bottom">
         <van-picker
           show-toolbar
@@ -119,10 +119,6 @@ export default {
         this.$toast('描述不能为空')
         return false
       }
-      if (this.newRiskLogDto.newRiskLogImageDto.riskImages.length === 0) {
-        this.$toast('还未上传内容')
-        return false
-      }
       if (!this.area) {
         this.$toast('请选择区域')
         return false
@@ -166,8 +162,9 @@ export default {
     }
   }
   .van-cell-group {
-    padding: 0 10px;
+    padding: 15px;
     .van-field {
+      font-size: 16px;
       .van-cell__title {
         width: 4em;
         text-align: right;
@@ -206,6 +203,9 @@ export default {
         }
       }
     }
+    .beLongArea {
+      align-items: center;
+    }
   }
   .repairFood {
     margin-top: 20px;
@@ -214,6 +214,7 @@ export default {
       margin: 0 10px;
       padding:  10px 20px;
       border-radius: 15px;
+      font-size: 16px;
     }
     .van-button:first-child {
       color: #fff;

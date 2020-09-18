@@ -80,6 +80,9 @@ request.interceptors.response.use(function (response) {
   if (error.response.data.status * 1 === 401) {
     return router.replace('/login')
   }
+  if (error.response.data.status * 1 === 403) {
+    this.$toast('没有权限')
+  }
   // console.log(error.response)
   // const errStr = error.toString()
   // if (errStr.search('timeout') !== -1) {

@@ -104,7 +104,7 @@ export function apiWorkHandle (workId, data) {
     isNeedLogin: true
   })
     .then(res => res)
-    .catch((e) => {})
+    .catch((e) => e)
 }
 
 // 工作记录查看
