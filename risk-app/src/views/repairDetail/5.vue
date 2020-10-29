@@ -34,7 +34,10 @@
           <van-button type="info" size="small" @click="onConfirm">指派</van-button>
         </li>
       </ul>
-      <h2>当前处理人：<span>A主任</span></h2>
+      <div class="logTextContent" v-if="adminDuplicateFlag">
+        已申报，<span>案件名称：<b>{{ adminDuplicateRiskTitle }}</b></span>
+      </div>
+      <h2>当前处理人：<span>{{ nowUserName }}</span></h2>
       <van-steps direction="vertical" :active="0">
         <van-step v-for="(item, index) in riskLogList" :key="index">
           <h3>
@@ -54,10 +57,6 @@
               </van-overlay>
             </div>
             <p>{{ item.riskLog.remark }}</p>
-            <div class="logTextContent">
-              已申报，<span>案件名称：
-              <b>关于教室窗户无法正常上锁的问题</b></span>
-            </div>
           </div>
         </van-step>
       </van-steps>
@@ -69,6 +68,10 @@ import { apiRepairUserList, zhuRenHandle, apiUploadFile, apiDelUploadFile, apiRi
 export default {
   data () {
     return {
+      nowUserName: '',
+      adminDuplicateFlag: '',
+      adminDuplicateRiskId: '',
+      adminDuplicateRiskTitle: '',
       title: '',
       riskId: '',
       handleType: 1,
@@ -226,6 +229,10 @@ export default {
     let status = this.$route.query.status
     this.riskId = this.$route.query.id
     this.title = this.$route.query.title
+    this.nowUserName = this.$route.query.nowUserName
+    this.adminDuplicateFlag = this.$route.query.duplicateFlag
+    this.adminDuplicateRiskId = this.$route.query.duplicateRiskId
+    this.adminDuplicateRiskTitle = this.$route.query.duplicateRiskTitle
     this.getApiRepairUserList()
     await apiRiskLogList(this.riskId)
       .then(res => {
@@ -343,6 +350,14 @@ export default {
         color: #1989fa;
       }
     }
+    .logTextContent {
+      margin: 10px 0;
+      font-size: 15px;
+      b {
+        text-decoration:underline;
+        color: #07c160;
+      }
+    }
     .van-steps {
       .van-steps__items {
         .van-step {
@@ -381,11 +396,6 @@ export default {
                       }
                     }
                   }
-                }
-              }
-              .logTextContent {
-                b {
-                  text-decoration:underline;
                 }
               }
               p {

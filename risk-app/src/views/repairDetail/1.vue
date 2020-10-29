@@ -3,6 +3,9 @@
   <div class="dispose1">
     <van-nav-bar :title="title" fixed placeholder left-arrow @click-left="goBack"></van-nav-bar>
     <div class="dispose1Content">
+      <div class="logTextContent" v-if="duplicateFlag">
+        已申报，<span>案件名称：<b>{{ duplicateRiskTitle }}</b></span>
+      </div>
       <h2>当前处理人：<span>已完成</span></h2>
       <van-steps direction="vertical" :active="0">
         <van-step v-for="(item, index) in riskLogList" :key="index">
@@ -23,10 +26,6 @@
               </van-overlay>
             </div>
             <p>{{ item.riskLog.remark }}</p>
-            <div class="logTextContent">
-              已申报，<span>案件名称：
-              <b>关于教室窗户无法正常上锁的问题</b></span>
-            </div>
           </div>
         </van-step>
       </van-steps>
@@ -39,6 +38,9 @@ export default {
   data () {
     return {
       nowUserName: '',
+      duplicateFlag: '',
+      duplicateRiskId: '',
+      duplicateRiskTitle: '',
       title: '',
       riskId: '',
       riskLogList: [],
@@ -115,29 +117,9 @@ export default {
     this.riskId = this.$route.query.id
     this.title = this.$route.query.title
     this.nowUserName = this.$route.query.nowUserName
-    // if (status * 1 === 1) {
-    //   // 处理中
-    //   if (type * 1 === 1) {
-    //     // 本人提出
-    //     this.handleType = 1
-    //   } else if (type * 1 === 2) {
-    //     // 非本人提出
-    //     this.handleType = 3
-    //   }
-    // } else if (status * 1 === 0) {
-    //   // 待确认
-    //   if (type * 1 === 1) {
-    //     // 本人提出
-    //     this.isShowCurrentPeople = true
-    //   } else if (type * 1 === 2) {
-    //     // 非本人提出
-    //     this.handleType = 2
-    //     this.getHandleIngRiskList()
-    //   }
-    // } else if (status * 1 === 2) {
-    //   // 已完成
-    //   this.isShowCurrentPeople = true
-    // }
+    this.duplicateFlag = this.$route.query.duplicateFlag
+    this.duplicateRiskId = this.$route.query.duplicateRiskId
+    this.duplicateRiskTitle = this.$route.query.duplicateRiskTitle
     await apiRiskLogList(this.riskId)
       .then(res => {
         this.riskLogList = res
@@ -155,6 +137,14 @@ export default {
   }
   .dispose1Content {
     padding: 10px 15px;
+    .logTextContent {
+      margin: 10px 0;
+      font-size: 15px;
+      b {
+        text-decoration:underline;
+        color: #07c160;
+      }
+    }
     h2 {
       font-size: 16px;
       > span {
@@ -199,11 +189,6 @@ export default {
                       }
                     }
                   }
-                }
-              }
-              .logTextContent {
-                b {
-                  text-decoration:underline;
                 }
               }
               p {

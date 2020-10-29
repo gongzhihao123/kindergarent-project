@@ -10,46 +10,14 @@
             <van-uploader v-model="fileList" :after-read="afterRead" :before-delete="delUpload" />
           </p>
         </li>
-        <!-- <li>
-          <van-radio-group v-model="duplicateFlag" direction="horizontal">
-            <van-radio :name='true'>确定是同一件，可关闭</van-radio>
-            <van-radio :name='false'>不是同一件</van-radio>
-          </van-radio-group>
-        </li> -->
-        <!-- <li class="isChangeDeclare">
-          <van-radio-group v-model="duplicateFlag">
-            <van-radio :name='false'>未申报</van-radio>
-            <van-radio :name="true">已申报</van-radio>
-          </van-radio-group>
-          <van-field v-if="duplicateFlag" placeholder="点击选择" v-model="declared" readonly @click="declaredPicker = true" />
-          <van-popup v-model="declaredPicker" position="bottom">
-            <van-picker
-              show-toolbar
-              value-key="title"
-              :columns="declaredList"
-              @confirm="declaredConfirm"
-              @cancel="declaredPicker = false"
-            />
-          </van-popup>
-        </li> -->
-        <!-- <li v-if="!duplicateFlag" class="nextChargePeople">
-          <span>指派负责人：</span>
-          <van-field placeholder="点击选择" v-model="chargePeople" readonly @click="chargePicker = true" />
-          <van-popup v-model="chargePicker" position="bottom">
-            <van-picker
-              show-toolbar
-              value-key="name"
-              :columns="chargeList"
-              @confirm="chargeConfirm"
-              @cancel="chargePicker = false"
-            />
-          </van-popup>
-        </li> -->
         <li class="confirmbutton">
           <van-checkbox v-model="duplicateFlag">已完成维修</van-checkbox>
           <van-button type="info" size="small" @click="onConfirm">提交</van-button>
         </li>
       </ul>
+      <div class="logTextContent" v-if="adminDuplicateFlag">
+        已申报，<span>案件名称：<b>{{ adminDuplicateRiskTitle }}</b></span>
+      </div>
       <h2>当前处理人：<span>{{ nowUserName }}</span></h2>
       <van-steps direction="vertical" :active="0">
         <van-step v-for="(item, index) in riskLogList" :key="index">
@@ -72,10 +40,6 @@
               </div>
             </div>
             <p>{{ item.riskLog.remark }}</p>
-            <div class="logTextContent">
-              已申报，<span>案件名称：
-              <b>关于教室窗户无法正常上锁的问题</b></span>
-            </div>
           </div>
         </van-step>
       </van-steps>
@@ -88,6 +52,9 @@ export default {
   data () {
     return {
       nowUserName: '',
+      adminDuplicateFlag: '',
+      adminDuplicateRiskId: '',
+      adminDuplicateRiskTitle: '',
       title: '',
       riskId: '',
       handleType: 1,
@@ -155,12 +122,6 @@ export default {
         this.declaredList = res
       })
     },
-    // // 负责人确认
-    // chargeConfirm (val) {
-    //   this.chargePeople = '下一步负责人：'+ val.name
-    //   this.chargeId = val.id
-    //   this.chargePicker = false
-    // },
     // 已申报项目确认
     declaredConfirm (val) {
       this.declared = val.title
@@ -248,29 +209,9 @@ export default {
     this.riskId = this.$route.query.id
     this.title = this.$route.query.title
     this.nowUserName = this.$route.query.nowUserName
-    // if (status * 1 === 1) {
-    //   // 处理中
-    //   if (type * 1 === 1) {
-    //     // 本人提出
-    //     this.handleType = 1
-    //   } else if (type * 1 === 2) {
-    //     // 非本人提出
-    //     this.handleType = 3
-    //   }
-    // } else if (status * 1 === 0) {
-    //   // 待确认
-    //   if (type * 1 === 1) {
-    //     // 本人提出
-    //     this.isShowCurrentPeople = true
-    //   } else if (type * 1 === 2) {
-    //     // 非本人提出
-    //     this.handleType = 2
-    //     this.getHandleIngRiskList()
-    //   }
-    // } else if (status * 1 === 2) {
-    //   // 已完成
-    //   this.isShowCurrentPeople = true
-    // }
+    this.adminDuplicateFlag = this.$route.query.duplicateFlag
+    this.adminDuplicateRiskId = this.$route.query.duplicateRiskId
+    this.adminDuplicateRiskTitle = this.$route.query.duplicateRiskTitle
     await apiRiskLogList(this.riskId)
       .then(res => {
         this.riskLogList = res
@@ -392,6 +333,14 @@ export default {
         color: #1989fa;
       }
     }
+    .logTextContent {
+      margin: 10px 0;
+      font-size: 15px;
+      b {
+        text-decoration:underline;
+        color: #07c160;
+      }
+    }
     .van-steps {
       .van-steps__items {
         .van-step {
@@ -430,11 +379,6 @@ export default {
                       }
                     }
                   }
-                }
-              }
-              .logTextContent {
-                b {
-                  text-decoration:underline;
                 }
               }
               p {

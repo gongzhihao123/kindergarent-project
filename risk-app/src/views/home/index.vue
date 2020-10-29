@@ -28,7 +28,7 @@
                   <dt>{{ index + 1 }}</dt>
                   <dd>
                     <p>{{ item.title }}</p>
-                    <span>处理人：{{item.nowUserName}}</span>
+                    <span v-if="item.nowUserName">处理人：{{item.nowUserName}}</span>
                   </dd>
                 </dl>
                 <!-- <van-button v-if="normalButtonFlag * 1 === 2" :type="handleButton(item) ? 'info' : 'warning'" size="small" @click="goHandle(item, 1)">{{ handleButton(item) ? '查看' : '处理' }}</van-button> -->
@@ -81,9 +81,6 @@ export default {
     },
     // 切换处理状态
     async changeHandleStatus (data) {
-      // if (data * 1 === 1) {
-
-      // }
       this.handleStatus = data
       this.changePickerFlag = 0
       await this.getTypeDict()
@@ -111,49 +108,59 @@ export default {
     // 去处理详情页
     goHandle (item, index) {
       console.log(item)
+      // 非本人提出
       // let isShowCurrentPeople = false
-      // if (index * 1 === 1) {
-      //   isShowCurrentPeople = this.handleButton(item)
-      // } else if (index * 1 === 2) {
-      //   isShowCurrentPeople = this.quanxiankongzhiButton(item)
-      // } else {
-      //   isShowCurrentPeople = this.zhurenButton(item)
-      // }
+      let loginUserId = window.localStorage.getItem('loginUserId')
+      let queryParams = { nowUserName: item.nowUserName, status: item.status, type: item.type, title: item.title, id: item.id,
+              duplicateFlag: item.duplicateFlag, duplicateRiskId: item.duplicateRiskId, duplicateRiskTitle: item.duplicateRiskTitle }
       if (item.type * 1 === 2) {
-        // 非本人提出
-        if (item.status * 1 === 0) {
-          // 负责人确认
-          this.$router.push({ path: '/dispose2', query: { nowUserName: item.nowUserName, status: item.status, type: item.type, title: item.title, id: item.id } })
-        } else if (item.status * 1 === 1) {
-          // 主任确认
-          this.$router.push({ path: '/dispose3', query: { nowUserName: item.nowUserName, status: item.status, type: item.type, title: item.title, id: item.id } })
-        } else if (item.status * 1 === 2) {
-          // 维修确认
-          this.$router.push({ path: '/dispose4', query: { nowUserName: item.nowUserName, status: item.status, type: item.type, title: item.title, id: item.id } })
-        } else if (item.status * 1 === 3) {
-          // 已完成查看
-          this.$router.push({ path: '/dispose1', query: { nowUserName: item.nowUserName, status: item.status, type: item.type, title: item.title, id: item.id } })
+        if (item.nowUserId * 1 === loginUserId * 1) {
+          switch (item.status) {
+            case 0:
+              // 负责人确认
+              this.$router.push({ path: '/dispose2', query: queryParams })
+              break
+            case 1:
+              // 主任确认
+              this.$router.push({ path: '/dispose3', query: queryParams })
+              break
+            case 2:
+              // 维修确认
+              this.$router.push({ path: '/dispose4', query: queryParams })
+              break
+            case 3:
+              // 已完成查看
+              this.$router.push({ path: '/dispose1', query: queryParams })
+              break
+            default:
+              console.log(item.status)
+          }
+        } else {
+          this.$router.push({ path: '/dispose1', query: queryParams })
         }
       } else {
         // 本人提出
-        switch (item.status) {
-          case 0:
-            // 负责人提出
-            this.$router.push({ path: '/dispose1', query: { nowUserName: item.nowUserName, status: item.status, type: item.type, title: item.title, id: item.id } })
-            break
-          case 1:
-            // 主任提出
-            this.$router.push({ path: '/dispose5', query: { nowUserName: item.nowUserName, status: item.status, type: item.type, title: item.title, id: item.id } })
-            break
-          case 2:
-            // 维修人员提出
-            this.$router.push({ path: '/dispose4', query: { nowUserName: item.nowUserName, status: item.status, type: item.type, title: item.title, id: item.id } })
-            break
-          default:
-            error.message = `连接错误${error.response.status}`
+        if (item.nowUserId * 1 === loginUserId * 1) {
+          switch (item.status) {
+            case 0:
+              // 负责人提出
+              this.$router.push({ path: '/dispose6', query: queryParams })
+              break
+            case 1:
+              // 主任提出
+              this.$router.push({ path: '/dispose5', query: queryParams })
+              break
+            case 2:
+              // 维修人员提出
+              this.$router.push({ path: '/dispose4', query: queryParams })
+              break
+            default:
+              console.log(item.status)
+          }
+        } else {
+          this.$router.push({ path: '/dispose1', query: queryParams })
         }
       }
-      // this.$router.push({ path: '/dispose', query: { isShowCurrentPeople: isShowCurrentPeople, status: item.status, type: item.type, title: item.title, id: item.id } })
     },
     // 获取状态列表
     getStatusDict() {
@@ -219,43 +226,11 @@ export default {
     quanxiankongzhiButton (item) {
       let quanButtonFlag = true
       let loginUserId = window.localStorage.getItem('loginUserId')
-      if (item.type * 1 === 2) {
-        // 非本人提出
-        if (item.nowUserId * 1 === loginUserId * 1) {
-          quanButtonFlag = false 
-        }
-      } else {
-        // 本人提出
-        quanButtonFlag = true
-        // if (item.nowUserId * 1 === loginUserId * 1) {
-        //   quanButtonFlag = false 
-        // }
+      if (item.nowUserId * 1 === loginUserId * 1) {
+        quanButtonFlag = false 
       }
-      
-      // if (this.handleStatus * 1 !== 2) {
-      //   let loginUserId = window.localStorage.getItem('loginUserId')
-      //   if (item.nowUserId * 1 === loginUserId * 1) {
-      //     quanButtonFlag = false
-      //   } else {
-      //     quanButtonFlag = true
-      //   }
-      //   if (item.status * 1 === 1) {
-      //     quanButtonFlag = true
-      //   }
-      // }
+      if (this.handleStatus * 1 === 3) {}
       return quanButtonFlag
-    },
-    // 主任显示按钮
-    zhurenButton (item) {
-      let zhurenButtonFlag = true
-      if (this.handleStatus * 1 === 0) {
-        zhurenButtonFlag = true
-      } else if (this.handleStatus * 1 === 1) {
-        zhurenButtonFlag = false
-      } else {
-        zhurenButtonFlag = true
-      }
-      return zhurenButtonFlag
     },
     // // 验证权限
     // judgeAuth (string) {
