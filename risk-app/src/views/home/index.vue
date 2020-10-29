@@ -21,7 +21,6 @@
             finished-text="没有更多了"
             @load="onLoad"
           >
-            <!-- <van-cell v-for="item in list" :key="item" :title="item" /> -->
             <ul>
               <li v-for="(item, index) in riskList" :key="index" >
                 <dl>
@@ -31,14 +30,9 @@
                     <span v-if="item.nowUserName">处理人：{{item.nowUserName}}</span>
                   </dd>
                 </dl>
-                <!-- <van-button v-if="normalButtonFlag * 1 === 2" :type="handleButton(item) ? 'info' : 'warning'" size="small" @click="goHandle(item, 1)">{{ handleButton(item) ? '查看' : '处理' }}</van-button> -->
                 <div>
-                  <!-- 普通用户 -->
                   <van-button :type="quanxiankongzhiButton(item) ? 'info' : 'warning'" size="small" @click="goHandle(item, 2)">{{ quanxiankongzhiButton(item) ? '查看' : '处理' }}</van-button>
                 </div>
-                <!-- <div v-if="normalButtonFlag * 1 === 3">
-                  <van-button :type="zhurenButton(item) ? 'info' : 'warning'" size="small" @click="goHandle(item, 3)">{{ zhurenButton(item) ? '查看' : '处理' }}</van-button>
-                </div> -->
               </li>
             </ul>
           </van-list>
@@ -107,9 +101,7 @@ export default {
     },
     // 去处理详情页
     goHandle (item, index) {
-      console.log(item)
       // 非本人提出
-      // let isShowCurrentPeople = false
       let loginUserId = window.localStorage.getItem('loginUserId')
       let queryParams = { nowUserName: item.nowUserName, status: item.status, type: item.type, title: item.title, id: item.id,
               duplicateFlag: item.duplicateFlag, duplicateRiskId: item.duplicateRiskId, duplicateRiskTitle: item.duplicateRiskTitle }
@@ -204,24 +196,6 @@ export default {
         this.riskList = res
       })
     },
-    handleButton (item) {
-      let buttonFlag = false
-      if (item.status * 1 === 0) {
-        // 待处理
-        if (item.type * 1 === 1) {
-          buttonFlag = true
-        } else if (item.type * 1 === 2) {
-          buttonFlag = false
-        }
-      } else if (item.status * 1 === 1) {
-        // 处理中
-        buttonFlag = true
-      } else if (item.status * 1 === 2) {
-        // 已完成
-        buttonFlag = true
-      }
-      return buttonFlag
-    },
     // 普通用户权限按钮显示
     quanxiankongzhiButton (item) {
       let quanButtonFlag = true
@@ -231,33 +205,13 @@ export default {
       }
       if (this.handleStatus * 1 === 3) {}
       return quanButtonFlag
-    },
-    // // 验证权限
-    // judgeAuth (string) {
-    //   let arr = this.authority.filter(item => item.authority === string)
-    //   if (arr.length > 0) {
-    //     return true
-    //   } else {
-    //     return false
-    //   }
-    // }
+    }
   },
   async mounted () {
     await this.getStatusDict()
     await this.getTypeDict()
     await this.getRiskList()
     this.authority = JSON.parse(window.localStorage.getItem('auth'))
-    // if (!this.judgeAuth('ROLE_DIRECTOR')){
-    //   if (this.judgeAuth('ROLE_NORMAL')) {
-    //     // 普通用户ROLE_NORMAL
-    //     this.normalButtonFlag = 1
-    //   } else {
-    //     this.normalButtonFlag = 2
-    //   }
-    // } else {
-    //   this.normalButtonFlag = 3
-    // }
-    
   }
 }
 </script>

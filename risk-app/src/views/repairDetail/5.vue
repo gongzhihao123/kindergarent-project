@@ -10,14 +10,14 @@
             <van-uploader v-model="fileList" :after-read="afterRead" :before-delete="delUpload" />
           </p>
         </li>
-        <li class="isChangeDeclare">
+        <!-- <li class="isChangeDeclare">
           <h1>隐患针对</h1>
           <van-radio-group v-model="duplicateFlag" direction="horizontal">
             <van-radio :name='true'>给予处理</van-radio>
             <van-radio :name='false'>不予处理</van-radio>
           </van-radio-group>
-        </li>
-        <li v-if="duplicateFlag" class="nextChargePeople">
+        </li> -->
+        <li class="nextChargePeople">
           <span>指派维修人员：</span>
           <van-field placeholder="点击选择" v-model="declared" readonly @click="declaredPicker = true" />
           <van-popup v-model="declaredPicker" position="bottom">
@@ -37,7 +37,7 @@
       <div class="logTextContent" v-if="adminDuplicateFlag">
         已申报，<span>案件名称：<b>{{ adminDuplicateRiskTitle }}</b></span>
       </div>
-      <h2>当前处理人：<span>{{ nowUserName }}</span></h2>
+      <h2>当前处理人：<span>{{ nowUserName ? nowUserName : '无' }}</span></h2>
       <van-steps direction="vertical" :active="0">
         <van-step v-for="(item, index) in riskLogList" :key="index">
           <h3>
@@ -81,7 +81,7 @@ export default {
       },
       fileList: [],
       radio: '1',
-      duplicateFlag: false,
+      duplicateFlag: true,
       declared: '',
       declaredId: '',
       declaredList: [],
@@ -143,7 +143,6 @@ export default {
     },
     // 处理提交
     onConfirm () {
-      console.log(this.duplicateFlag)
       if (this.duplicateFlag) {
         if (!this.declaredId) {
           this.$toast('请选择指派人员')
@@ -210,15 +209,14 @@ export default {
       }
     },
     getTimeLength (data) {
-      for (let i = 0; i < data.length; i++) {
-        if (i * 1 === 0) {
+      for (let i = data.length-1; i >= 0; i--) {
+        if (i + 1 === data.length) {
           if (data[i].riskLog !== 'undefined' && data[i].riskLog) {
             data[i].riskLog.intervalTime = '开始'
           }
-        }
-        if (i * 1 > 1 || i * 1 === 1) {
-          if ((data[i].riskLog  !== 'undefined' && data[i].riskLog) && (data[i - 1].riskLog !== 'undefined' && data[i - 1].riskLog)) {
-            data[i].riskLog.intervalTime = this.chanegTimeStamp(data[i - 1].riskLog.createTime, data[i].riskLog.createTime)
+        } else {
+          if ((data[i].riskLog  !== 'undefined' && data[i].riskLog) && (data[i + 1].riskLog !== 'undefined' && data[i + 1].riskLog)) {
+            data[i].riskLog.intervalTime = '用时：' + this.chanegTimeStamp(data[i+1].riskLog.createTime, data[i].riskLog.createTime)
           }
         }
       }
@@ -230,7 +228,9 @@ export default {
     this.riskId = this.$route.query.id
     this.title = this.$route.query.title
     this.nowUserName = this.$route.query.nowUserName
-    this.adminDuplicateFlag = this.$route.query.duplicateFlag
+    if (this.$route.query.duplicateFlag) {
+      this.adminDuplicateFlag = JSON.parse(this.$route.query.duplicateFlag)
+    }
     this.adminDuplicateRiskId = this.$route.query.duplicateRiskId
     this.adminDuplicateRiskTitle = this.$route.query.duplicateRiskTitle
     this.getApiRepairUserList()
