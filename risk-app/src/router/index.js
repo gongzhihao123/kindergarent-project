@@ -38,11 +38,11 @@ const routes = [
     name: 'dispose',
     component: index,
     children: [
-      { path: '/dispose/1', name: 'dispose1', component: () => import('./../views/repairDetail/1.vue') },
-      { path: '/dispose/2', name: 'dispose2', component: () => import('./../views/repairDetail/2.vue') },
-      { path: '/dispose/3', name: 'dispose3', component: () => import('./../views/repairDetail/3.vue') },
-      { path: '/dispose/4', name: 'dispose4', component: () => import('./../views/repairDetail/4.vue') },
-      { path: '/dispose/5', name: 'dispose5', component: () => import('./../views/repairDetail/5.vue') }
+      { path: '/dispose1', name: 'dispose1', component: () => import('./../views/repairDetail/1.vue') },
+      { path: '/dispose2', name: 'dispose2', component: () => import('./../views/repairDetail/2.vue') },
+      { path: '/dispose3', name: 'dispose3', component: () => import('./../views/repairDetail/3.vue') },
+      { path: '/dispose4', name: 'dispose4', component: () => import('./../views/repairDetail/4.vue') },
+      { path: '/dispose5', name: 'dispose5', component: () => import('./../views/repairDetail/5.vue') }
     ]
   }
   

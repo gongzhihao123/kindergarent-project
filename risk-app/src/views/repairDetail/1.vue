@@ -3,14 +3,14 @@
   <div class="dispose1">
     <van-nav-bar :title="title" fixed placeholder left-arrow @click-left="goBack"></van-nav-bar>
     <div class="dispose1Content">
-      <h2>当前处理人：<span>A主任</span></h2>
+      <h2>当前处理人：<span>已完成</span></h2>
       <van-steps direction="vertical" :active="0">
         <van-step v-for="(item, index) in riskLogList" :key="index">
           <h3>
             {{ item.riskLog.handlerUserName }}：{{ item.riskLog.createTime | changeDateFormat }} <span v-if="item.riskLog">({{ item.riskLog.intervalTime }})</span>
           </h3>
           <div class="logContent">
-            <!-- <div class="imgBox" v-for=" imgList in item.riskLogImageList " :key="imgList.id">
+            <div class="imgBox" v-for=" imgList in item.riskLogImageList " :key="imgList.id">
               <div v-if="imgList.path" class="imgBoxShow" >
                 <img :src="'http://39.104.113.97/static/' + imgList.path" @click.stop="changeImg(imgList)" alt="">
               </div>
@@ -22,29 +22,7 @@
                 </div>
               </van-overlay>
             </div>
-            <p>{{ item.riskLog.remark }}</p> -->
-            <div class="logTextContent">
-              已申报，<span>案件名称：
-              <b>关于教室窗户无法正常上锁的问题</b></span>
-            </div>
-          </div>
-        </van-step>
-        <van-step>
-          <!-- <h3>
-            {{ item.riskLog.handlerUserName }}：{{ item.riskLog.createTime | changeDateFormat }} <span v-if="item.riskLog">({{ item.riskLog.intervalTime }})</span>
-          </h3> -->
-          <div class="logContent">
-            <div class="logTextContent">
-              已申报，<span>案件名称：
-              <b>关于教室窗户无法正常上锁的问题</b></span>
-            </div>
-          </div>
-        </van-step>
-        <van-step>
-          <!-- <h3>
-            {{ item.riskLog.handlerUserName }}：{{ item.riskLog.createTime | changeDateFormat }} <span v-if="item.riskLog">({{ item.riskLog.intervalTime }})</span>
-          </h3> -->
-          <div class="logContent">
+            <p>{{ item.riskLog.remark }}</p>
             <div class="logTextContent">
               已申报，<span>案件名称：
               <b>关于教室窗户无法正常上锁的问题</b></span>
@@ -60,6 +38,7 @@ import { chargePersonConfirm, apiUploadFile, apiDelUploadFile, apiRiskList, dire
 export default {
   data () {
     return {
+      nowUserName: '',
       title: '',
       riskId: '',
       riskLogList: [],
@@ -76,7 +55,7 @@ export default {
     },
     // 返回上一页
     goBack () {
-      this.$router.go(-1)
+      this.$router.push('/home')
     },
     chanegTimeStamp (arr1, arr2) {
       if (!arr1) return
@@ -131,11 +110,11 @@ export default {
     }
   },
   async created () {
-    this.isShowCurrentPeople = JSON.parse(this.$route.query.isShowCurrentPeople)
     let type = this.$route.query.type
     let status = this.$route.query.status
     this.riskId = this.$route.query.id
     this.title = this.$route.query.title
+    this.nowUserName = this.$route.query.nowUserName
     // if (status * 1 === 1) {
     //   // 处理中
     //   if (type * 1 === 1) {

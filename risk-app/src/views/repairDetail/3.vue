@@ -3,7 +3,7 @@
   <div class="dispose3">
     <van-nav-bar :title="title" fixed placeholder left-arrow @click-left="goBack"></van-nav-bar>
     <div class="dispose3Content">
-       <ul v-if="!isShowCurrentPeople">
+       <ul>
         <li class="dispose3TextArea">
           <van-field v-model="remark" rows="3" show-word-limit maxlength="200" autosize type="textarea" placeholder="请补充说明" />
           <p>
@@ -33,12 +33,12 @@
           </van-popup>
         </li> -->
         <li v-if="!duplicateFlag" class="nextChargePeople">
-          <span>指派负责人：</span>
+          <span>指派维修人员：</span>
           <van-field placeholder="点击选择" v-model="chargePeople" readonly @click="chargePicker = true" />
           <van-popup v-model="chargePicker" position="bottom">
             <van-picker
               show-toolbar
-              value-key="name"
+              value-key="nickName"
               :columns="chargeList"
               @confirm="chargeConfirm"
               @cancel="chargePicker = false"
@@ -49,14 +49,14 @@
           <van-button type="info" size="small" @click="onConfirm">提交</van-button>
         </li>
       </ul>
-      <h2>当前处理人：<span>A主任</span></h2>
+      <h2>当前处理人：<span>{{ nowUserName }}</span></h2>
       <van-steps direction="vertical" :active="0">
         <van-step v-for="(item, index) in riskLogList" :key="index">
           <h3>
             {{ item.riskLog.handlerUserName }}：{{ item.riskLog.createTime | changeDateFormat }} <span v-if="item.riskLog">({{ item.riskLog.intervalTime }})</span>
           </h3>
           <div class="logContent">
-            <!-- <div class="imgBox" v-for=" imgList in item.riskLogImageList " :key="imgList.id">
+            <div class="imgBox" v-for=" imgList in item.riskLogImageList " :key="imgList.id">
               <div v-if="imgList.path" class="imgBoxShow" >
                 <img :src="'http://39.104.113.97/static/' + imgList.path" @click.stop="changeImg(imgList)" alt="">
               </div>
@@ -68,33 +68,11 @@
                 </div>
               </van-overlay>
             </div>
-            <p>{{ item.riskLog.remark }}</p> -->
-            <div class="logTextContent">
+            <p>{{ item.riskLog.remark }}</p>
+            <!-- <div class="logTextContent">
               已申报，<span>案件名称：
               <b>关于教室窗户无法正常上锁的问题</b></span>
-            </div>
-          </div>
-        </van-step>
-        <van-step>
-          <!-- <h3>
-            {{ item.riskLog.handlerUserName }}：{{ item.riskLog.createTime | changeDateFormat }} <span v-if="item.riskLog">({{ item.riskLog.intervalTime }})</span>
-          </h3> -->
-          <div class="logContent">
-            <div class="logTextContent">
-              已申报，<span>案件名称：
-              <b>关于教室窗户无法正常上锁的问题</b></span>
-            </div>
-          </div>
-        </van-step>
-        <van-step>
-          <!-- <h3>
-            {{ item.riskLog.handlerUserName }}：{{ item.riskLog.createTime | changeDateFormat }} <span v-if="item.riskLog">({{ item.riskLog.intervalTime }})</span>
-          </h3> -->
-          <div class="logContent">
-            <div class="logTextContent">
-              已申报，<span>案件名称：
-              <b>关于教室窗户无法正常上锁的问题</b></span>
-            </div>
+            </div> -->
           </div>
         </van-step>
       </van-steps>
@@ -102,14 +80,14 @@
   </div>
 </template>
 <script>
-import { chargePersonConfirm, apiUploadFile, apiDelUploadFile, apiRiskList, directorConfirm, directorHandle, apiRiskLogList } from '@/services/api/index'
+import { zhuRenConfirm, apiRepairUserList, apiUploadFile, apiDelUploadFile, apiRiskList, directorConfirm, directorHandle, apiRiskLogList } from '@/services/api/index'
 export default {
   data () {
     return {
+      nowUserName: '',
       title: '',
       riskId: '',
       handleType: 1,
-      isShowCurrentPeople: false,
       remark: '',
       newRiskLogImageDto: {
         riskImages: []
@@ -118,7 +96,7 @@ export default {
       radio: '1',
       chargePeople: '',
       chargeId: '',
-      chargeList: [{ id: 1, name: 'A主任' }],
+      chargeList: [],
       chargePicker: false,
       duplicateFlag: false,
       declared: '',
@@ -139,7 +117,7 @@ export default {
     },
     // 返回上一页
     goBack () {
-      this.$router.go(-1)
+      this.$router.push('/home')
     },
     // 上传文件
     afterRead (file) {
@@ -168,26 +146,48 @@ export default {
         }
       })
     },
-    // 处理中的安全隐患列表
-    getHandleIngRiskList () {
-      apiRiskList({status: 1}).then(res => {
-        this.declaredList = res
+    // 获取维修人员列表
+    getApiRepairUserList () {
+      apiRepairUserList().then(res => {
+        this.chargeList = res
       })
     },
     // // 负责人确认
-    // chargeConfirm (val) {
-    //   this.chargePeople = '下一步负责人：'+ val.name
-    //   this.chargeId = val.id
-    //   this.chargePicker = false
-    // },
-    // 已申报项目确认
-    declaredConfirm (val) {
-      this.declared = val.title
-      this.declaredId = val.id
-      this.declaredPicker = false
+    chargeConfirm (val) {
+      this.chargePeople =  val.nickName
+      this.chargeId = val.id
+      this.chargePicker = false
     },
+    // // 已申报项目确认
+    // declaredConfirm (val) {
+    //   this.declared = val.title
+    //   this.declaredId = val.id
+    //   this.declaredPicker = false
+    // },
     // 处理提交
-    // onConfirm () {
+    onConfirm () {
+      if (!this.duplicateFlag) {
+        if (!this.chargeId) {
+          this.$toast('请指派负责人')
+          return
+        }
+      }
+      zhuRenConfirm(this.riskId,{
+          confirmDuplicateFlag: this.duplicateFlag,
+          nextUserId: this.chargeId,
+          nextUserName: this.chargePeople,
+          newRiskLogImageDto: this.newRiskLogImageDto,
+          remark: this.remark
+        })
+          .then(res => {
+            if (res.status === 201) {
+              this.$toast('操作成功')
+              this.$router.replace('/home')
+            }
+          })
+          .catch(() => {
+            this.$toast('请求失败')
+          })
     //   if (!this.remark) {
     //     this.$toast('内容不能为空')
     //     return
@@ -247,7 +247,7 @@ export default {
     //       this.$toast('请求失败')
     //     })
     //   }
-    // },
+    },
     chanegTimeStamp (arr1, arr2) {
       if (!arr1) return
       if (!arr2) return
@@ -286,26 +286,29 @@ export default {
       }
     },
     getTimeLength (data) {
-      for (let i = 0; i < data.length; i++) {
-        if (i * 1 === 0) {
-          if (data[i].riskLog !== 'undefined' && data[i].riskLog) {
-            data[i].riskLog.intervalTime = '开始'
+      if (data.length > 0) {
+        for (let i = 0; i < data.length; i++) {
+          if (i * 1 === 0) {
+            if (data[i].riskLog !== 'undefined' && data[i].riskLog) {
+              data[i].riskLog.intervalTime = '开始'
+            }
           }
-        }
-        if (i * 1 > 1 || i * 1 === 1) {
-          if ((data[i].riskLog  !== 'undefined' && data[i].riskLog) && (data[i - 1].riskLog !== 'undefined' && data[i - 1].riskLog)) {
-            data[i].riskLog.intervalTime = this.chanegTimeStamp(data[i - 1].riskLog.createTime, data[i].riskLog.createTime)
+          if (i * 1 > 1 || i * 1 === 1) {
+            if ((data[i].riskLog  !== 'undefined' && data[i].riskLog) && (data[i - 1].riskLog !== 'undefined' && data[i - 1].riskLog)) {
+              data[i].riskLog.intervalTime = this.chanegTimeStamp(data[i - 1].riskLog.createTime, data[i].riskLog.createTime)
+            }
           }
-        }
+        } 
       }
     }
   },
   async created () {
-    this.isShowCurrentPeople = JSON.parse(this.$route.query.isShowCurrentPeople)
     let type = this.$route.query.type
     let status = this.$route.query.status
     this.riskId = this.$route.query.id
     this.title = this.$route.query.title
+    this.nowUserName = this.$route.query.nowUserName
+    this.getApiRepairUserList()
     // if (status * 1 === 1) {
     //   // 处理中
     //   if (type * 1 === 1) {

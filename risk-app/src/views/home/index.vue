@@ -28,17 +28,17 @@
                   <dt>{{ index + 1 }}</dt>
                   <dd>
                     <p>{{ item.title }}</p>
-                    <span>责任人：{{item.adminUserName}}</span>
+                    <span>处理人：{{item.nowUserName}}</span>
                   </dd>
                 </dl>
-                <van-button v-if="normalButtonFlag * 1 === 2" :type="handleButton(item) ? 'info' : 'warning'" size="small" @click="goHandle(item, 1)">{{ handleButton(item) ? '查看' : '确认' }}</van-button>
-                <div v-if="normalButtonFlag * 1 === 1">
-                  <van-button :type="quanxiankongzhiButton(item) ? 'info' : 'warning'" size="small" @click="goHandle(item, 2)">{{ quanxiankongzhiButton(item) ? '查看' : '确认' }}</van-button>
+                <!-- <van-button v-if="normalButtonFlag * 1 === 2" :type="handleButton(item) ? 'info' : 'warning'" size="small" @click="goHandle(item, 1)">{{ handleButton(item) ? '查看' : '处理' }}</van-button> -->
+                <div>
+                  <!-- 普通用户 -->
+                  <van-button :type="quanxiankongzhiButton(item) ? 'info' : 'warning'" size="small" @click="goHandle(item, 2)">{{ quanxiankongzhiButton(item) ? '查看' : '处理' }}</van-button>
                 </div>
-                <div v-if="normalButtonFlag * 1 === 3">
-                  <van-button :type="zhurenButton(item) ? 'info' : 'warning'" size="small" @click="goHandle(item, 3)">{{ zhurenButton(item) ? '查看' : '确认' }}</van-button>
-                </div>
-                <!-- <van-button type="info" size="small">查看</van-button> -->
+                <!-- <div v-if="normalButtonFlag * 1 === 3">
+                  <van-button :type="zhurenButton(item) ? 'info' : 'warning'" size="small" @click="goHandle(item, 3)">{{ zhurenButton(item) ? '查看' : '处理' }}</van-button>
+                </div> -->
               </li>
             </ul>
           </van-list>
@@ -81,6 +81,9 @@ export default {
     },
     // 切换处理状态
     async changeHandleStatus (data) {
+      // if (data * 1 === 1) {
+
+      // }
       this.handleStatus = data
       this.changePickerFlag = 0
       await this.getTypeDict()
@@ -107,15 +110,50 @@ export default {
     },
     // 去处理详情页
     goHandle (item, index) {
-      let isShowCurrentPeople = false
-      if (index * 1 === 1) {
-        isShowCurrentPeople = this.handleButton(item)
-      } else if (index * 1 === 2) {
-        isShowCurrentPeople = this.quanxiankongzhiButton(item)
+      console.log(item)
+      // let isShowCurrentPeople = false
+      // if (index * 1 === 1) {
+      //   isShowCurrentPeople = this.handleButton(item)
+      // } else if (index * 1 === 2) {
+      //   isShowCurrentPeople = this.quanxiankongzhiButton(item)
+      // } else {
+      //   isShowCurrentPeople = this.zhurenButton(item)
+      // }
+      if (item.type * 1 === 2) {
+        // 非本人提出
+        if (item.status * 1 === 0) {
+          // 负责人确认
+          this.$router.push({ path: '/dispose2', query: { nowUserName: item.nowUserName, status: item.status, type: item.type, title: item.title, id: item.id } })
+        } else if (item.status * 1 === 1) {
+          // 主任确认
+          this.$router.push({ path: '/dispose3', query: { nowUserName: item.nowUserName, status: item.status, type: item.type, title: item.title, id: item.id } })
+        } else if (item.status * 1 === 2) {
+          // 维修确认
+          this.$router.push({ path: '/dispose4', query: { nowUserName: item.nowUserName, status: item.status, type: item.type, title: item.title, id: item.id } })
+        } else if (item.status * 1 === 3) {
+          // 已完成查看
+          this.$router.push({ path: '/dispose1', query: { nowUserName: item.nowUserName, status: item.status, type: item.type, title: item.title, id: item.id } })
+        }
       } else {
-        isShowCurrentPeople = this.zhurenButton(item)
+        // 本人提出
+        switch (item.status) {
+          case 0:
+            // 负责人提出
+            this.$router.push({ path: '/dispose1', query: { nowUserName: item.nowUserName, status: item.status, type: item.type, title: item.title, id: item.id } })
+            break
+          case 1:
+            // 主任提出
+            this.$router.push({ path: '/dispose5', query: { nowUserName: item.nowUserName, status: item.status, type: item.type, title: item.title, id: item.id } })
+            break
+          case 2:
+            // 维修人员提出
+            this.$router.push({ path: '/dispose4', query: { nowUserName: item.nowUserName, status: item.status, type: item.type, title: item.title, id: item.id } })
+            break
+          default:
+            error.message = `连接错误${error.response.status}`
+        }
       }
-      this.$router.push({ path: '/dispose', query: { isShowCurrentPeople: isShowCurrentPeople, status: item.status, type: item.type, title: item.title, id: item.id } })
+      // this.$router.push({ path: '/dispose', query: { isShowCurrentPeople: isShowCurrentPeople, status: item.status, type: item.type, title: item.title, id: item.id } })
     },
     // 获取状态列表
     getStatusDict() {
@@ -123,7 +161,6 @@ export default {
         if (res.length > 0) {
           this.tabList = res
         } else {
-          // this.$toast(res.response.data.message)
           this.tabList = []
         }
       })
@@ -181,17 +218,31 @@ export default {
     // 普通用户权限按钮显示
     quanxiankongzhiButton (item) {
       let quanButtonFlag = true
-      if (this.handleStatus * 1 !== 2) {
-        let loginUserId = window.localStorage.getItem('loginUserId')
-        if (item.adminUserId * 1 === loginUserId * 1) {
-          quanButtonFlag = false
-        } else {
-          quanButtonFlag = true
+      let loginUserId = window.localStorage.getItem('loginUserId')
+      if (item.type * 1 === 2) {
+        // 非本人提出
+        if (item.nowUserId * 1 === loginUserId * 1) {
+          quanButtonFlag = false 
         }
-        if (item.status * 1 === 1) {
-          quanButtonFlag = true
-        }
+      } else {
+        // 本人提出
+        quanButtonFlag = true
+        // if (item.nowUserId * 1 === loginUserId * 1) {
+        //   quanButtonFlag = false 
+        // }
       }
+      
+      // if (this.handleStatus * 1 !== 2) {
+      //   let loginUserId = window.localStorage.getItem('loginUserId')
+      //   if (item.nowUserId * 1 === loginUserId * 1) {
+      //     quanButtonFlag = false
+      //   } else {
+      //     quanButtonFlag = true
+      //   }
+      //   if (item.status * 1 === 1) {
+      //     quanButtonFlag = true
+      //   }
+      // }
       return quanButtonFlag
     },
     // 主任显示按钮
@@ -206,31 +257,31 @@ export default {
       }
       return zhurenButtonFlag
     },
-    // 验证权限
-    judgeAuth (string) {
-      let arr = this.authority.filter(item => item.authority === string)
-      if (arr.length > 0) {
-        return true
-      } else {
-        return false
-      }
-    }
+    // // 验证权限
+    // judgeAuth (string) {
+    //   let arr = this.authority.filter(item => item.authority === string)
+    //   if (arr.length > 0) {
+    //     return true
+    //   } else {
+    //     return false
+    //   }
+    // }
   },
   async mounted () {
     await this.getStatusDict()
     await this.getTypeDict()
     await this.getRiskList()
     this.authority = JSON.parse(window.localStorage.getItem('auth'))
-    if (!this.judgeAuth('ROLE_DIRECTOR')){
-      if (this.judgeAuth('ROLE_NORMAL')) {
-        // 普通用户ROLE_NORMAL
-        this.normalButtonFlag = 1
-      } else {
-        this.normalButtonFlag = 2
-      }
-    } else {
-      this.normalButtonFlag = 3
-    }
+    // if (!this.judgeAuth('ROLE_DIRECTOR')){
+    //   if (this.judgeAuth('ROLE_NORMAL')) {
+    //     // 普通用户ROLE_NORMAL
+    //     this.normalButtonFlag = 1
+    //   } else {
+    //     this.normalButtonFlag = 2
+    //   }
+    // } else {
+    //   this.normalButtonFlag = 3
+    // }
     
   }
 }

@@ -60,12 +60,12 @@ module.exports = {
     // 配置多个代理
     proxy: {
       '/platform': {
-        // target: 'https://jk.meetyuu.com/',
-        target: 'http://39.104.113.97',
+        target: 'http://58.133.87.118:8080',
+        // target: 'http://39.104.113.97',
         ws: true, // 代理的WebSockets
         changeOrigin: true, // 允许websockets跨域
         pathRewrite: {
-          '^platform': '/platform'
+          '^/platform': '/platform'
         }
       }
     }

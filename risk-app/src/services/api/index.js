@@ -101,11 +101,39 @@ export function apiTypeDict (data) {
     .catch((e) => e)
 }
 
-// 安全隐患负责人确认
+// 安全隐患类别列表
+export function apiRepairUserList (data) {
+  return request.get('/riskLog/repairUserList', { params: data })
+    .then(res => res.data)
+    .catch((e) => e)
+}
+
+// 安全隐患负责人确认---非本人提出
 export function chargePersonConfirm (riskId, data) {
   return request.post('/riskLog/confirm/' + riskId, data)
     .then(res => res)
     .catch((e) => e)
+}
+
+// 安全隐患主任确认---非本人提出
+export function zhuRenConfirm (riskId, data) {
+  return request.post('/riskLog/check/' + riskId, data)
+    .then(res => res)
+    .catch((e) => e)
+}
+
+// 安全隐患维修人员确认---非本人提出
+export function weiXiuConfirm (riskId, data) {
+  return request.post('riskLog/repair/' + riskId, data)
+    .then(res => res)
+    .catch((e) => e)
+}
+
+// 安全隐患主任提交处理---管理员本人提出
+export function zhuRenHandle (riskId, data) {
+  return request.post('/riskLog/handle/' + riskId, data)
+    .then(res => res)
+    .catch((e) => {})
 }
 
 // 安全隐患主任提交处理

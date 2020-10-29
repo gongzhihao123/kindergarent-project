@@ -86,6 +86,7 @@ export default {
               this.$router.replace('/home')
             } else if (res.response) {
               this.$toast(res.response.data.message)
+              this.getCodeImgUrl()
             }
           })
       }
