@@ -43,17 +43,19 @@
             {{ item.riskLog.handlerUserName }}：{{ item.riskLog.createTime | changeDateFormat }} <span v-if="item.riskLog">({{ item.riskLog.intervalTime }})</span>
           </h3>
           <div class="logContent">
-            <div class="imgBox" v-for=" imgList in item.riskLogImageList " :key="imgList.id">
-              <div v-if="imgList.path" class="imgBoxShow" >
-                <img :src="'http://39.104.113.97/static/' + imgList.path" @click.stop="changeImg(imgList)" alt="">
-              </div>
-              <van-overlay :show="imgShow" @click="imgShow = false">
-                <div class="wrapper previewImg">
-                  <div class="previewImgBox">
-                    <img :src="imgUrl" alt="">
-                  </div>
+            <div v-if="item.riskLogImageList" style="display: flex;">
+              <div class="imgBox" v-for=" imgList in item.riskLogImageList " :key="imgList.id">
+                <div v-if="imgList.path" class="imgBoxShow" >
+                  <img :src="'http://39.104.113.97/static/' + imgList.path" @click.stop="changeImg(imgList)" alt="">
                 </div>
-              </van-overlay>
+                <van-overlay :show="imgShow" @click="imgShow = false">
+                  <div class="wrapper previewImg">
+                    <div class="previewImgBox">
+                      <img :src="imgUrl" alt="">
+                    </div>
+                  </div>
+                </van-overlay>
+              </div>
             </div>
             <p>{{ item.riskLog.remark }}</p>
           </div>

@@ -25,7 +25,7 @@
             {{ item.riskLog.handlerUserName }}：{{ item.riskLog.createTime | changeDateFormat }} <span v-if="item.riskLog">({{ item.riskLog.intervalTime }})</span>
           </h3>
           <div class="logContent">
-            <div v-if="item.riskLogImageList.length > 0">
+            <div v-if="item.riskLogImageList" style="display: flex;">
               <div class="imgBox" v-for=" imgList in item.riskLogImageList " :key="imgList.id">
                 <div v-if="imgList.path" class="imgBoxShow" >
                   <img :src="'http://39.104.113.97/static/' + imgList.path" @click.stop="changeImg(imgList)" alt="">
