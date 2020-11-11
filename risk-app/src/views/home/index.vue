@@ -10,8 +10,14 @@
       <van-tabs v-if="tabList.length > 0" v-model="handleStatus" @click="changeHandleStatus" sticky>
         <van-sticky :offset-top="43">
           <div class="vanButtonGrounp">
-            <van-button v-for="(item, index) in buttonList" @change="changeHandleStatus" :key="index" :class="changePickerFlag * 1 === index ? 'van-button-activity' : ''"
-            size="small" @click="changePicker(item.type, index)">{{ item.typeName }}({{ item.count }})</van-button>
+            <!-- <van-button v-for="(item, index) in buttonList" @change="changeHandleStatus" :key="index" :class="changePickerFlag * 1 === index ? 'van-button-activity' : ''"
+            size="small" @click="changePicker(item.type, index)">{{ item.typeName }}({{ item.count }})</van-button> -->
+            <!-- <van-switch v-model="checked" size="24px" /> -->
+            <van-cell center :title="switchVal">
+              <template #right-icon>
+                <van-switch @change="changeSwitch" v-model="checked" size="24" />
+              </template>
+            </van-cell>
           </div> 
         </van-sticky>
         <van-tab v-for="(item, index) in tabList" :name="item.status" :key="index" :title=" item.statusName + '(' + item.count + ')' ">
@@ -47,6 +53,8 @@ import { apiStatusDict, apiTypeDict, apiRiskList } from '@/services/api/index'
 export default {
   data () {
     return {
+      checked: false,
+      switchVal: '全部',
       authority: [],
       handleStatus: 0,
       handleType: '',
@@ -56,6 +64,8 @@ export default {
       riskList: [],
       tabList: [],
       buttonList: [],
+      current: 1,
+      pageSize: 10,
       // 列表
       list: [],
       loading: false,
@@ -71,6 +81,16 @@ export default {
     changePicker (id, val) {
       this.handleType = id
       this.changePickerFlag = val * 1
+      this.getRiskList()
+    },
+    // 是否本人显示
+    changeSwitch (val) {
+      this.checked = val
+      if (val) {
+        this.switchVal = '仅显示本人'
+      } else {
+        this.switchVal = '全部'
+      }
       this.getRiskList()
     },
     // 切换处理状态
@@ -157,8 +177,8 @@ export default {
     // 获取状态列表
     getStatusDict() {
       apiStatusDict().then(res => {
-        if (res.length > 0) {
-          this.tabList = res
+        if (res.data.length > 0) {
+          this.tabList = res.data
         } else {
           this.tabList = []
         }
@@ -168,7 +188,8 @@ export default {
     getTypeDict() {
       this.buttonList = []
       apiTypeDict({
-        status: this.handleStatus
+        status: this.handleStatus,
+        type: this.checked
       }).then(res => {
         let arr = []
         let obj = {}
@@ -190,10 +211,12 @@ export default {
         this.handleType = ''
       }
       apiRiskList({
+        pageSize: this.pageSize,
+        current: this.current,
         status: this.handleStatus,
-        type: this.handleType
+        onlyMyselfFlag: this.checked
       }).then(res => {
-        this.riskList = res
+        this.riskList = res.data.records
       })
     },
     // 普通用户权限按钮显示
@@ -209,9 +232,9 @@ export default {
   },
   async mounted () {
     await this.getStatusDict()
-    await this.getTypeDict()
+    // await this.getTypeDict()
     await this.getRiskList()
-    this.authority = JSON.parse(window.localStorage.getItem('auth'))
+    // this.authority = JSON.parse(window.localStorage.getItem('auth'))
   }
 }
 </script>
@@ -238,15 +261,16 @@ export default {
       .van-tabs__content {
         .vanButtonGrounp {
           display: flex;
-          justify-content: space-around;
+          justify-content: flex-end;
+          padding-right: 10px;
           background: #fff;
-          .van-button {
-            background: #fff;
-            border: none;
-          }
-          .van-button-activity {
-            border-bottom: 3PX solid #1989fa;
-          }
+          // .van-button {
+          //   background: #fff;
+          //   border: none;
+          // }
+          // .van-button-activity {
+          //   border-bottom: 3PX solid #1989fa;
+          // }
         }
         .van-tab__pane {
           .van-list {

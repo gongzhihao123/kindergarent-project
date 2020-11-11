@@ -139,20 +139,13 @@ export default {
       this.getregionList()
     },
     // 删除
-    delPlan (id) {
-      delRegion(id).then(res => {
-        this.$notify({
-          title: '成功',
-          message: '操作成功',
-          type: 'success'
-        })
+    delArea (val) {
+      delRegion(val.areaId).then(res => {
+        success(res.msg)
         this.getregionList()
       })
-        .catch(() => {
-          this.$notify.error({
-            title: '错误',
-            message: '操作失败'
-          })
+        .catch((err) => {
+          error(err.msg)
         })
     },
     add () {
@@ -206,7 +199,6 @@ export default {
     },
     // 设置区域管理员
     changePermiss (val, e) {
-      console.log(val, e)
       if (e) {
         // 为true 添加
         addRegionAdmin({ areaId: this.areaId, userId: val.userId }).then(res => {
@@ -230,7 +222,6 @@ export default {
     // 区域人员列表
     getRegionUserList () {
       regionUserList().then(res => {
-        console.log(res.data)
         this.regionUserList = res.data
       })
     },

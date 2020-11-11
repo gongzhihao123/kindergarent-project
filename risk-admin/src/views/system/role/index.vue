@@ -199,7 +199,6 @@ export default {
             error(res.msg)
           })
       }
-      // console.log(e, val)
     },
     // 获取角色权限列表
     getRolePermissList () {

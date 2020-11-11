@@ -3,7 +3,7 @@
     <van-nav-bar title="添加新隐患" left-arrow @click-left="goHome"></van-nav-bar>
     <van-cell-group>
       <van-field v-model="title" label="标题" clearable placeholder="请输入标题" />
-      <van-field v-model="newRiskLogDto.remark" rows="3" autosize label="描述" type="textarea" placeholder="请输入描述" />
+      <van-field v-model="riskLog.remark" rows="3" autosize label="描述" type="textarea" placeholder="请输入描述" />
       <van-cell title="上传" class="vantUpload">
         <template #right-icon>
           <van-uploader  v-model="temUploadFile" :after-read="afterRead" :before-delete="delUpload" multiple />
@@ -13,11 +13,12 @@
       <van-popup v-model="areaPicker" position="bottom">
         <van-picker
           show-toolbar
-          value-key="name"
+          value-key="areaName"
           :columns="areaList"
           @confirm="areaConfirm"
           @cancel="areaPicker = false"
         />
+        <van-pagination v-if="areaTotal" v-model="current" force-ellipses :total-items="areaTotal" :show-page-size="3" />
       </van-popup>
     </van-cell-group>
     <div class="repairFood">
@@ -31,14 +32,16 @@ import { apiAreaList, apiAreaAdminList, apiUploadFile, apiAddRisk, apiDelUploadF
 export default {
   data () {
     return {
+      current: 1,
+      pageSize: 6,
+      areaTotal: '',
       title: '',
-      newRiskLogDto: {
+      riskLog: {
         remark: '',
-        newRiskLogImageDto: {
-          riskImages: []
+        riskLogAttachment: {
+          attachmentList: []
         }
       },
-      fileList: [],
       temUploadFile: [],
       uploadFile: '',
       area: '',
@@ -63,11 +66,10 @@ export default {
       file.message = '上传中...'
       apiUploadFile(data)
         .then(res => {
-          if (res.resultCode === 1) {
+          if (res.code === 200) {
             file.status = 'done'
             file.message = '上传成功'
-            this.newRiskLogDto.newRiskLogImageDto.riskImages.push(res.filepath)
-            this.fileList.push(res)
+            this.riskLog.riskLogAttachment.attachmentList.push(res.data)
           } else {
             file.status = 'failed'
             file.message = '上传失败'
@@ -80,27 +82,25 @@ export default {
     },
     // 删除上传文件
     delUpload (file, detail) {
-      let filepath = this.newRiskLogImageDto.newRiskLogImageDto.riskImages[detail.index]
-      apiDelUploadFile({ filepath: filepath }).then(res => {
-        if (res.status === 202) {
-          this.newRiskLogDto.newRiskLogImageDto.riskImages.splice(detail.index, 1)
+      let attachmentId = this.riskLog.riskLogAttachment.attachmentList[detail.index].attachmentId
+      apiDelUploadFile(attachmentId).then(res => {
+        if (res.code === 200) {
+          this.riskLog.riskLogAttachment.attachmentList.splice(detail.index, 1)
           this.temUploadFile.splice(detail.index, 1)
         }
       })
     },
     // 区域选择确认
     async areaConfirm (val) {
-      await apiAreaAdminList({ areaId: val.id }).then(res => {
-        if (res.length === 1) {
-          this.areaAdminUserList = res[0]
-          this.adminUserName = res[0].userName
-          this.adminUserId = res[0].userId
-        } else if (res.length === 0) {
-          this.$toast('该区域目前并无管理人员')
-        }
-      })
-      this.area = val.name
-      this.areaId = val.id
+      console.log(val)
+      if (val.admin) {
+        this.adminUserName = val.admin.nickname
+        this.adminUserId = val.admin.userId
+      } else {
+        this.$toast('该区域目前并无管理人员')
+      }
+      this.area = val.areaName
+      this.areaId = val.areaId
       this.areaPicker = false
       
     },
@@ -115,7 +115,7 @@ export default {
         this.$toast('标题6个12字符')
         return false
       }
-      if (!this.newRiskLogDto.remark) {
+      if (!this.riskLog.remark) {
         this.$toast('描述不能为空')
         return false
       }
@@ -132,11 +132,12 @@ export default {
           adminUserId: this.adminUserId,
           adminUserName: this.adminUserName,
           areaId: this.areaId,
-          newRiskLogDto: this.newRiskLogDto,
+          riskLog: this.riskLog,
           title: this.title
         })
           .then(res => {
-            if (res.status === 201) {
+            console.log(res)
+            if (res.status === 200) {
               this.$router.push('/home')
             }
           })
@@ -144,8 +145,10 @@ export default {
     },
     // 获取区域列表
     getAreaList () {
-      apiAreaList().then(res => {
-        this.areaList = res
+      apiAreaList({ current: this.current, pageSize: this.pageSize }).then(res => {
+        console.log(res.data)
+        this.areaList = res.data.records
+        this.areaTotal = res.data.total
       })
     }
   },

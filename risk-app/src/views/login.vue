@@ -37,16 +37,16 @@ export default {
       codeUrl: '',
       captchaKey: '',
       code: '',
-      username: '',
-      password: ''
+      username: 'admin',
+      password: '123456'
     }
   },
   methods: {
     // 获取验证码
     getCodeImgUrl () {
       apiCodeImgUrl().then(res => {
-        this.codeUrl = res.imgBase64
-        this.captchaKey = res.key
+        this.codeUrl = res.data.imgBase64
+        this.captchaKey = res.data.captchaKey
       })
     },
     // 验证
@@ -71,18 +71,17 @@ export default {
     },
     confirmLogin () {
       if (this.checkBox()) {
-        let temPassword = encrypt(this.password)
+        // let temPassword = encrypt(this.password)
         apiLogin({
           captchaKey: this.captchaKey,
-          code: this.code,
-          password: temPassword,
-          username: this.username
+          captchaValue: this.code,
+          password: this.password,
+          account: this.username,
+          rememberMe: false
         })
           .then(res => {
             if (res.status === 200) {
-              window.localStorage.setItem('accessToken', res.data.token)
-              window.localStorage.setItem('auth', JSON.stringify(res.data.auth))
-              window.localStorage.setItem('loginUserId', res.data.onlineUser.id)
+              window.localStorage.setItem('loginUserId', res.data.data.user.userId)
               this.$router.replace('/home')
             } else if (res.response) {
               this.$toast(res.response.data.message)

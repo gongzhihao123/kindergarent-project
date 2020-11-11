@@ -3,7 +3,7 @@ import { request } from '@/services/request'
 
 export function apiLogin (param) {
   return request({
-    url: '/auth/authorize',
+    url: '/authorize',
     method: 'post',
     data: param,
     isNeedLogin: true
@@ -26,7 +26,7 @@ export function apiReg (data) {
 
 export function apiCodeImgUrl (parameter) {
   return request({
-    url: '/auth/code',
+    url: '/captcha',
     method: 'get',
     params: parameter,
     isNeedLogin: true
@@ -36,11 +36,10 @@ export function apiCodeImgUrl (parameter) {
 }
 
 // 区域列表
-export function apiAreaList (parameter) {
+export function apiAreaList (data) {
   return request({
-    url: '/area/list',
+    url: '/risk/area/page/' + data.current + '/' + data.pageSize,
     method: 'get',
-    params: parameter,
     isNeedLogin: true
   })
     .then(res => res.data)
@@ -56,15 +55,15 @@ export function apiAreaAdminList (data) {
 
 // 上传文件
 export function apiUploadFile (data) {
-  return request.post('/riskImage/attachment', data)
+  return request.post('/attachment', data)
     .then(res => res.data)
     .catch((e) => {})
 }
 
 // 删除上传文件
 export function apiDelUploadFile (data) {
-  return request.delete('/riskImage/attachment', { params: data })
-    .then(res => res)
+  return request.delete('/attachment/' + data)
+    .then(res => res.data)
     .catch((e) => {})
 }
 
@@ -82,7 +81,7 @@ export function apiAddRisk (data) {
 
 // 安全隐患列表
 export function apiRiskList (data) {
-  return request.get('/risk/list', { params: data })
+  return request.get('/risk/page/'+ data.current + '/' + data.pageSize + '?status=' + data.status + '&onlyMyselfFlag=' + data.onlyMyselfFlag)
     .then(res => res.data)
     .catch((e) => e)
 }

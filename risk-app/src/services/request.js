@@ -35,7 +35,7 @@ request.interceptors.request.use(function (config) {
       config.method === 'delete' ||
       config.method === 'patch'
   ) {
-    if (config.url !== '/riskImage/attachment') {
+    if (config.url !== '/attachment') {
       config.headers['Content-Type'] = 'application/json;charse=UTF-8'
       config.data = JSON.stringify(config.data)
     } else {
@@ -77,19 +77,14 @@ request.interceptors.response.use(function (response) {
 }, error => {
   // 对响应错误做点什么
   Toast.clear()
-  if (error.response.data.status * 1 === 401) {
-    return router.replace('/login')
+  console.log(error.response)
+  if (error.response.status * 1 === 401) {
+    router.replace('/login')
   }
-  if (error.response.data.status * 1 === 403) {
-    this.$toast('没有权限')
+  if (error.response.status * 1 === 403) {
+    router.replace('/login')
   }
-  // console.log(error.response)
-  // const errStr = error.toString()
-  // if (errStr.search('timeout') !== -1) {
-  //   error = '请求超时'
-  // } else if (errStr.toLocaleLowerCase().indexOf('network error') !== -1) {
-  //   error = '网络错误'
-  // }
+  
   return Promise.reject(error)
 })
 
