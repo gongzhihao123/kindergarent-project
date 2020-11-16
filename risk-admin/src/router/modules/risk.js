@@ -7,7 +7,7 @@ const kindergarRoutes =
     meta: {
       title: '幼儿园管理',
       icon: '404',
-      roles: ['test']
+      roles: ['admin']
     },
     children: [
       {

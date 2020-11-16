@@ -30,27 +30,15 @@ module.exports = {
     // before: require('./mock/mock-server.js')
     /* 使用代理 */
     proxy: {
-      '/': {
+      // http://58.133.87.190:8080/captcha
+      // http://123.57.161.229/kindergarten/manage/dict/page/1/10
+      '/kindergarten': {
         /* 目标代理服务器地址 */
-        // target: 'https://jk.meetyuu.com',
-        target: 'http://58.133.87.118:8080',
+        target: 'http://123.57.161.229',
+        // target: 'http://58.133.87.118:18080',
         ws: true,
         /* 允许跨域 */
         changeOrigin: true
-        // pathRewrite: {
-        //   '^': '/'
-        // }
-      },
-      '/manage': {
-        /* 目标代理服务器地址 */
-        // target: 'https://jk.meetyuu.com',
-        target: 'http://58.133.87.118:8080',
-        ws: true,
-        /* 允许跨域 */
-        changeOrigin: true,
-        pathRewrite: {
-          '^/manage': 'manage'
-        }
       }
     }
   },

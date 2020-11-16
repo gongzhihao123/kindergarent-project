@@ -35,12 +35,10 @@
       </div>
       <el-pagination
         v-if="total"
-        @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="current"
-        :page-sizes="[10, 15, 20, 25]"
         :page-size="pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
+        layout="total, prev, pager, next, jumper"
         :total="total">
       </el-pagination>
       <el-dialog
@@ -97,10 +95,6 @@ export default {
   },
   methods: {
     // 分页
-    handleSizeChange (val) {
-      this.pageSize = val
-      this.getPermissionList()
-    },
     handleCurrentChange (val) {
       this.current = val
       this.getPermissionList()

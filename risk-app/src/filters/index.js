@@ -14,3 +14,9 @@ export function changeDateFormat (arr) {
   let newString = arr[0] + '-' + arr[1] + '-' + arr[2] + ' ' + arr[3] + ':' + arr[4] + ':' + arr[5]
   return newString
 }
+
+export function formatReplace (time) {
+  if (!time) return null
+  let format = time.replace('T', ' ')
+  return format
+}

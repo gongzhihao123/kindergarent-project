@@ -60,7 +60,7 @@ export const asyncRoutes = [
     meta: {
       title: '系统设置',
       icon: '404',
-      roles: ['test']
+      roles: ['admin']
     },
     children: [
       {

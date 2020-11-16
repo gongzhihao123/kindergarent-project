@@ -147,6 +147,28 @@ export function apiEditUserInfo (data) {
     data
   })
 }
+// 用户角色列表
+export function apiUserRoleList () {
+  return request({
+    url: '/manage/userAccount/roleList',
+    method: 'get'
+  })
+}
+// 添加用户角色
+export function apiAddUserRole (data) {
+  return request({
+    url: '/manage/userAccount/userRole',
+    method: 'post',
+    data
+  })
+}
+// 删除用户角色
+export function apiDelUserRole (data) {
+  return request({
+    url: '/manage/userAccount/userRole/' + data.userId + '/' + data.roleId,
+    method: 'delete'
+  })
+}
 
 // 角色管理
 // 角色权限列表

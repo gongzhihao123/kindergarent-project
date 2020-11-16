@@ -7,7 +7,7 @@
       </template>
     </van-nav-bar>
     <div class="home-container">
-      <van-tabs v-if="tabList.length > 0" v-model="handleStatus" @click="changeHandleStatus" sticky>
+      <van-tabs v-model="handleStatus" @click="changeHandleStatus" sticky active="未完成">
         <van-sticky :offset-top="43">
           <div class="vanButtonGrounp">
             <!-- <van-button v-for="(item, index) in buttonList" @change="changeHandleStatus" :key="index" :class="changePickerFlag * 1 === index ? 'van-button-activity' : ''"
@@ -20,7 +20,32 @@
             </van-cell>
           </div> 
         </van-sticky>
-        <van-tab v-for="(item, index) in tabList" :name="item.status" :key="index" :title=" item.statusName + '(' + item.count + ')' ">
+        <!-- 未完成 -->
+        <van-tab name="false" title="未完成">
+          <van-list
+            v-model="loading"
+            :finished="finished"
+            finished-text="没有更多了"
+            @load="onLoad"
+          >
+            <ul>
+              <li v-for="(item, index) in riskList" :key="index" >
+                <dl>
+                  <dt>{{ index + 1 }}</dt>
+                  <dd>
+                    <p>{{ item.title }}</p>
+                    <span v-if="item.nowUserName">处理人：{{item.nowUserName}}</span>
+                  </dd>
+                </dl>
+                <div>
+                  <van-button :type="quanxiankongzhiButton(item) ? 'info' : 'warning'" size="small" @click="goHandle(item, 2)">{{ quanxiankongzhiButton(item) ? '查看' : '处理' }}</van-button>
+                </div>
+              </li>
+            </ul>
+          </van-list>
+        </van-tab>
+        <!-- 已完成 -->
+        <van-tab name="true" title="已完成">
           <van-list
             v-model="loading"
             :finished="finished"
@@ -44,19 +69,19 @@
           </van-list>
         </van-tab>
       </van-tabs>
-      <div v-else><van-empty image="network" description="网络错误或内容为空" /></div>
+      <!-- <div><van-empty image="network" description="网络错误或内容为空" /></div> -->
     </div>
   </div>
 </template>
 <script>
-import { apiStatusDict, apiTypeDict, apiRiskList } from '@/services/api/index'
+import { apiStatusDict, apiTypeDict, apiRiskPage } from '@/services/api/index'
 export default {
   data () {
     return {
       checked: false,
       switchVal: '全部',
       authority: [],
-      handleStatus: 0,
+      handleStatus: false,
       handleType: '',
       changePickerFlag: 0,
       completed: 3,
@@ -80,7 +105,7 @@ export default {
     },
     changePicker (id, val) {
       this.handleType = id
-      this.changePickerFlag = val * 1
+      // this.changePickerFlag = val * 1
       this.getRiskList()
     },
     // 是否本人显示
@@ -95,9 +120,8 @@ export default {
     },
     // 切换处理状态
     async changeHandleStatus (data) {
+      console.log(data)
       this.handleStatus = data
-      this.changePickerFlag = 0
-      await this.getTypeDict()
       await this.getRiskList()
     },
     onLoad() {
@@ -123,8 +147,8 @@ export default {
     goHandle (item, index) {
       // 非本人提出
       let loginUserId = window.localStorage.getItem('loginUserId')
-      let queryParams = { nowUserName: item.nowUserName, status: item.status, type: item.type, title: item.title, id: item.id,
-              duplicateFlag: item.duplicateFlag, duplicateRiskId: item.duplicateRiskId, duplicateRiskTitle: item.duplicateRiskTitle }
+      let queryParams = { nowUserName: item.nowUserName, title: item.title, riskId: item.riskId,
+              duplicateFlag: item.duplicateFlag, duplicateRiskId: item.duplicateRiskId, duplicateRiskTitle: item.duplicateRiskTitle, adminUserId: item.adminUserId }
       if (item.type * 1 === 2) {
         if (item.nowUserId * 1 === loginUserId * 1) {
           switch (item.status) {
@@ -141,6 +165,12 @@ export default {
               this.$router.push({ path: '/dispose4', query: queryParams })
               break
             case 3:
+              // 区域管理员确认
+              // let newObj = {}
+              // newObj = Object.assign({ repairUserId: item.repairUserId  }, queryParams)
+              this.$router.push({ path: '/dispose7', query: Object.assign({ repairUserId: item.repairUserId  }, queryParams) })
+              break
+            case 4:
               // 已完成查看
               this.$router.push({ path: '/dispose1', query: queryParams })
               break
@@ -166,6 +196,13 @@ export default {
               // 维修人员提出
               this.$router.push({ path: '/dispose4', query: queryParams })
               break
+            case 3:
+              // 责任负责人确定
+              this.$router.push({ path: '/dispose7', query: Object.assign({ repairUserId: item.repairUserId  }, queryParams) })
+              break
+            case 4:
+              // 已完成查看
+              this.$router.push({ path: '/dispose1', query: queryParams })
             default:
               console.log(item.status)
           }
@@ -184,36 +221,36 @@ export default {
         }
       })
     },
-    // 获取类别列表
-    getTypeDict() {
-      this.buttonList = []
-      apiTypeDict({
-        status: this.handleStatus,
-        type: this.checked
-      }).then(res => {
-        let arr = []
-        let obj = {}
-        obj.typeName = '全部'
-        obj.type = 0
-        if (res.length === 1) {
-          obj.count = res[0].count
-        } else if (res.length === 2) {
-          obj.count = res[0].count + res[1].count
-        } else if (res.length === 3) {
-          obj.count = res[0].count + res[1].count + res[3].count
-        }
-        arr.push(obj)
-        this.buttonList = res.concat(arr).reverse()
-      })
-    },
+    // // 获取类别列表
+    // getTypeDict() {
+    //   this.buttonList = []
+    //   apiTypeDict({
+    //     status: this.handleStatus,
+    //     type: this.checked
+    //   }).then(res => {
+    //     let arr = []
+    //     let obj = {}
+    //     obj.typeName = '全部'
+    //     obj.type = 0
+    //     if (res.length === 1) {
+    //       obj.count = res[0].count
+    //     } else if (res.length === 2) {
+    //       obj.count = res[0].count + res[1].count
+    //     } else if (res.length === 3) {
+    //       obj.count = res[0].count + res[1].count + res[3].count
+    //     }
+    //     arr.push(obj)
+    //     this.buttonList = res.concat(arr).reverse()
+    //   })
+    // },
     getRiskList () {
       if (this.handleType * 1 === 0) {
         this.handleType = ''
       }
-      apiRiskList({
+      apiRiskPage({
         pageSize: this.pageSize,
         current: this.current,
-        status: this.handleStatus,
+        finishedFlag: this.handleStatus,
         onlyMyselfFlag: this.checked
       }).then(res => {
         this.riskList = res.data.records
@@ -223,16 +260,20 @@ export default {
     quanxiankongzhiButton (item) {
       let quanButtonFlag = true
       let loginUserId = window.localStorage.getItem('loginUserId')
-      if (item.nowUserId * 1 === loginUserId * 1) {
-        quanButtonFlag = false 
+      if (this.handleStatus === 'true') {
+        quanButtonFlag = true 
+      } else {
+        if (item.nowUserId * 1 === loginUserId * 1) {
+          quanButtonFlag = false 
+        } else {
+          quanButtonFlag = true 
+        }
       }
-      if (this.handleStatus * 1 === 3) {}
+      
       return quanButtonFlag
     }
   },
   async mounted () {
-    await this.getStatusDict()
-    // await this.getTypeDict()
     await this.getRiskList()
     // this.authority = JSON.parse(window.localStorage.getItem('auth'))
   }

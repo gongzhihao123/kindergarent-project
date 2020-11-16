@@ -43,7 +43,7 @@ service.interceptors.response.use(
       return res
     } else {
       Message({
-        message: res.message || 'Error',
+        message: res.msg || 'Error',
         type: 'error',
         duration: 5 * 1000
       })
@@ -56,7 +56,7 @@ service.interceptors.response.use(
         removeToken()
         router.push('/login')
         break
-      case 451:
+      case 403:
         removeToken()
         router.push('/login')
         break

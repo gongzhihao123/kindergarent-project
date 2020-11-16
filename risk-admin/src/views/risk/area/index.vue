@@ -40,23 +40,26 @@
           </el-table>
           <el-pagination
             v-if="total"
-            @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="current"
-            :page-sizes="[10, 15, 20, 25]"
             :page-size="pageSize"
-            layout="total, sizes, prev, pager, next, jumper"
+            layout="total, prev, pager, next, jumper"
             :total="total">
           </el-pagination>
         </div>
         <div class="rolePermissBox el-col el-col-24 el-col-xs-24 el-col-sm-24 el-col-md-7 el-col-lg-7 el-col-xl-6">
           <div class="rolePermissBox-header">
-            <span>权限设置</span>
+            <span>区域管理员设置</span>
             <div></div>
           </div>
           <el-checkbox-group v-model="regionAdminUserList" >
             <el-checkbox @change="changePermiss(item, $event)" v-for="(item, index) in regionUserList" :key="index" :label="item.userId">{{ item.nickname }}</el-checkbox>
           </el-checkbox-group>
+          <!-- <el-radio-group v-model="radio">
+            <el-radio :label="3">备选项</el-radio>
+            <el-radio :label="6">备选项</el-radio>
+            <el-radio :label="9">备选项</el-radio>
+          </el-radio-group> -->
         </div>
       </div>
       <el-dialog
@@ -89,7 +92,7 @@
   </div>
 </template>
 <script>
-import { addRegion, regionList, delRegion, regionUserList, addRegionAdmin, delRegionAdmin } from '@/api/risk/index'
+import { addRegion, regionList, delRegion, regionUserList, addRegionAdmin } from '@/api/risk/index'
 import { success, error } from '@/utils/notice'
 export default {
   data () {
@@ -127,10 +130,6 @@ export default {
     }
   },
   methods: {
-    handleSizeChange (val) {
-      this.pageSize = val
-      this.getregionList()
-    },
     handleCurrentChange (val) {
       this.current = val
       this.getregionList()
@@ -199,25 +198,23 @@ export default {
     },
     // 设置区域管理员
     changePermiss (val, e) {
-      if (e) {
-        // 为true 添加
-        addRegionAdmin({ areaId: this.areaId, userId: val.userId }).then(res => {
-          success(res.msg)
-          this.getregionList()
+      addRegionAdmin({ areaId: this.areaId, userId: val.userId }).then(res => {
+        success(res.msg)
+        this.getregionList()
+      })
+        .catch(res => {
+          error(res.msg)
         })
-          .catch(res => {
-            error(res.msg)
-          })
-      } else {
-        // 为false 删除
-        delRegionAdmin(this.areaId, val.userId).then(res => {
-          success(res.msg)
-          this.getregionList()
-        })
-          .catch(res => {
-            error(res.msg)
-          })
-      }
+      // } else {
+      //   // 为false 删除
+      //   delRegionAdmin(this.areaId, val.userId).then(res => {
+      //     success(res.msg)
+      //     this.getregionList()
+      //   })
+      //     .catch(res => {
+      //       error(res.msg)
+      //     })
+      // }
     },
     // 区域人员列表
     getRegionUserList () {

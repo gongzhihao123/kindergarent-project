@@ -18,43 +18,52 @@
       </el-row>
   <!-- 表格主体 -->
       <div class="content">
-        <el-table
-          :data="tableData"
-          style="width: 100%; margin-top: 20px">
-          <el-table-column
-            prop="account"
-            label="账号">
-          </el-table-column>
-          <el-table-column
-            label="名称"
-            property="user.nickname">
-          </el-table-column>
-          <el-table-column
-            fixed="right"
-            label="操作"
-            width="600">
-            <template slot-scope="scope">
-              <el-button size="mini" type="info" icon="el-icon-refresh-left" @click="reset(scope.row)">重置密码</el-button>
-              <el-button size="mini" type="primary" icon="el-icon-edit" @click="editUser(scope.row)">修改账号</el-button>
-              <!-- <el-button size="mini" type="info" icon="el-icon-refresh-left" @click="editUserInfo(scope.row)">修改用户信息</el-button> -->
-              <!-- <el-button size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)">编辑</el-button> -->
-              <el-popconfirm title="您确定要删除此项目吗？" @confirm='delUser(scope.row)'>
-                <el-button slot="reference" size="mini" icon="el-icon-delete" type="danger">删除</el-button>
-              </el-popconfirm>
-            </template>
-          </el-table-column>
-        </el-table>
+        <div class="table1 el-col el-col-22 el-col-xs-22 el-col-sm-22 el-col-md-13 el-col-lg-13 el-col-xl-16">
+          <el-table
+            :data="tableData"
+            @row-click="clickUser"
+            highlight-current-row
+            style="width: 100%; margin-top: 20px">
+            <el-table-column
+              prop="account"
+              label="账号">
+            </el-table-column>
+            <el-table-column
+              label="名称"
+              property="user.nickname">
+            </el-table-column>
+            <el-table-column
+              fixed="right"
+              label="操作"
+              width="600">
+              <template slot-scope="scope">
+                <el-button size="mini" type="info" icon="el-icon-refresh-left" @click="reset(scope.row)">重置密码</el-button>
+                <el-button size="mini" type="primary" icon="el-icon-edit" @click="editUser(scope.row)">修改账号</el-button>
+                <el-popconfirm title="您确定要删除此项目吗？" @confirm='delUser(scope.row)'>
+                  <el-button slot="reference" size="mini" icon="el-icon-delete" type="danger">删除</el-button>
+                </el-popconfirm>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-pagination
+            v-if="total"
+            @current-change="handleCurrentChange"
+            :current-page="current"
+            :page-size="pageSize"
+            layout="total, prev, pager, next, jumper"
+            :total="total">
+          </el-pagination>
+        </div>
+        <div class="userPermissBox el-col el-col-24 el-col-xs-24 el-col-sm-24 el-col-md-7 el-col-lg-7 el-col-xl-6">
+          <div class="userPermissBox-header">
+            <span>权限设置</span>
+            <div></div>
+          </div>
+          <el-checkbox-group v-model="checkUserRoleList" >
+            <el-checkbox @change="changeRole(item, $event)" v-for="(item, index) in userRoleList" :key="index" :label="item.roleId">{{ item.roleName }}</el-checkbox>
+          </el-checkbox-group>
+        </div>
       </div>
-      <el-pagination
-        v-if="total"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="current"
-        :page-sizes="[10, 15, 20, 25]"
-        :page-size="pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total">
-      </el-pagination>
       <!-- 添加用户 -->
       <el-dialog
         :title="isEdit ? '修改用户' : '添加用户'"
@@ -83,32 +92,11 @@
           <el-button type="primary" @click="addUserDialogConfirm">确 定</el-button>
         </span>
       </el-dialog>
-      <!-- 修改用户信息 -->
-      <!-- <el-dialog
-        title="修改用户信息"
-        :visible.sync="userDialog"
-        width="30%"
-        :before-close="userDialogClose">
-        <span>
-          <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
-            <el-form-item label="名称" prop="nickname">
-              <el-input v-model="ruleForm.nickname" auto-complete="on" style="width: 310px;"></el-input>
-            </el-form-item>
-            <el-form-item v-else label="账号" prop="account">
-              <el-input v-model="ruleForm.account" auto-complete="on" style="width: 310px;"></el-input>
-            </el-form-item>
-          </el-form>
-        </span>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="userDialogClose">取 消</el-button>
-          <el-button type="primary" @click="userDialogConfirm">确 定</el-button>
-        </span>
-      </el-dialog> -->
     </div>
   </div>
 </template>
 <script>
-import { apiUserList, apiAddUser, apiResetPasseord, apiEditUser, apiDelUser } from '@/api/user'
+import { apiUserList, apiAddUser, apiResetPasseord, apiEditUser, apiDelUser, apiUserRoleList, apiAddUserRole, apiDelUserRole } from '@/api/user'
 import { success, error, warning } from '@/utils/notice'
 export default {
   data () {
@@ -121,7 +109,7 @@ export default {
       ],
       // 分页
       current: 1,
-      pageSize: 10,
+      pageSize: 8,
       total: '',
       // 编辑or添加弹窗
       handleDialog: 1,
@@ -157,15 +145,14 @@ export default {
         account: [
           { required: true, message: '账号不能为空', trigger: 'blur' }
         ]
-      }
+      },
+      userRoleList: [],
+      checkUserRoleList: [],
+      userId: ''
     }
   },
   methods: {
     // 分页
-    handleSizeChange (val) {
-      this.pageSize = val
-      this.getUserList()
-    },
     handleCurrentChange (val) {
       this.current = val
       this.getUserList()
@@ -253,39 +240,43 @@ export default {
         })
       })
     },
-    // // 修改用户信息
-    // editUserInfo (row) {
-    //   this.ruleForm.nickname = ''
-    //   this.ruleForm.userId = row.userId
-    //   this.isEditInfo = true
-    //   this.userDialog = true
-    // },
-    // userDialogClose () {
-    //   this.userDialog = false
-    //   this.$refs['ruleForm'].resetFields()
-    //   this.ruleForm = {}
-    // },
-    // userDialogConfirm () {
-    //   this.$refs['ruleForm'].validate((valid) => {
-    //     if (valid) {
-    //       if (this.isEditInfo) {
-    //         // 修改用户信息
-    //         apiEditUserInfo(this.ruleForm).then(res => {
-    //           success(res.data)
-    //           this.getUserList()
-    //           this.userDialog = false
-    //         })
-    //           .catch(res => {
-    //             error(res.msg)
-    //           })
-    //       }
-    //     } else {
-    //       console.log('error submit!!')
-    //       return false
-    //     }
-    //   })
-    //   // this.userDialog = false
-    // },
+    clickUser (row) {
+      console.log(row)
+      this.userId = row.userId
+      this.checkUserRoleList = row.roleList.map(item => {
+        return item.roleId
+      })
+    },
+    changeRole (val, e) {
+      console.log(val)
+      if (e) {
+        // 为true 添加
+        apiAddUserRole({ userId: this.userId, roleId: val.roleId }).then(res => {
+          success(res.msg)
+          this.getUserList()
+          this.userId = ''
+        })
+          .catch(res => {
+            error(res.msg)
+          })
+      } else {
+        // 为false 删除
+        apiDelUserRole({ userId: this.userId, roleId: val.roleId }).then(res => {
+          success(res.msg)
+          this.getUserList()
+          this.userId = ''
+        })
+          .catch(res => {
+            error(res.msg)
+          })
+      }
+    },
+    // 获取用户角色列表
+    getUserRoleList () {
+      apiUserRoleList().then(res => {
+        this.userRoleList = res.data
+      })
+    },
     getUserList () {
       apiUserList(this.current, this.pageSize).then(res => {
         this.tableData = res.data.records
@@ -297,6 +288,7 @@ export default {
   },
   mounted () {
     this.getUserList()
+    this.getUserRoleList()
   }
 }
 </script>
@@ -317,7 +309,6 @@ export default {
         overflow: auto;
         .el-table__header {
           th {
-            // background-color: #e0e0e0;
             .cell {
               text-align: center;
             }
@@ -330,9 +321,29 @@ export default {
           }
         }
       }
-    }
-    .el-pagination {
-      text-align: center;
+      .el-pagination {
+        margin: 10px 0;
+        text-align: center;
+      }
+      > div {
+        border-radius: 4px;
+        border: 1px solid #e6ebf5;
+      }
+      .table1 {
+        margin-right: 7.5px;
+      }
+      .userPermissBox {
+        margin-left: 7.5px;
+        .userPermissBox-header {
+          display: flex;
+          justify-content: space-between;
+          padding: 18px 20px;
+          border-bottom: 1px solid #e6ebf5;
+        }
+        .el-checkbox-group {
+          padding: 20px;
+        }
+      }
     }
     .addUserDia {
       .el-dialog__body {

@@ -85,8 +85,8 @@ export default {
       handleType: 1,
       isShowCurrentPeople: false,
       remark: '',
-      newRiskLogImageDto: {
-        riskImages: []
+      riskLogAttachment: {
+        attachmentList: []
       },
       fileList: [],
       radio: '1',
@@ -126,7 +126,7 @@ export default {
           if (res.resultCode === 1) {
             file.status = 'done'
             file.message = '上传成功'
-            this.newRiskLogImageDto.riskImages.push(res.filepath)
+            this.riskLogAttachment.attachmentList.push(res.filepath)
           } else {
             file.status = 'failed'
             file.message = '上传失败'
@@ -134,10 +134,10 @@ export default {
         })
     },
     delUpload (file, detail) {
-      let filepath = this.newRiskLogImageDto.riskImages[detail.index]
+      let filepath = this.riskLogAttachment.attachmentList[detail.index]
       apiDelUploadFile({ filepath: filepath }).then(res => {
         if (res.status === 202) {
-          this.newRiskLogImageDto.riskImages.splice(detail.index, 1)
+          this.riskLogAttachment.attachmentList.splice(detail.index, 1)
           this.fileList.splice(detail.index, 1)
         }
       })
@@ -174,7 +174,7 @@ export default {
       if (this.handleType * 1 === 1) {
         // 主任直接提交--别人发现
         directorHandle(this.riskId, {
-          newRiskLogImageDto: this.newRiskLogImageDto,
+          riskLogAttachment: this.riskLogAttachment,
           remark: this.remark
         })
           .then(res => {
@@ -192,7 +192,7 @@ export default {
           duplicateFlag: this.duplicateFlag,
           duplicateRiskId: this.declaredId,
           duplicateRiskTitle: this.declared,
-          newRiskLogImageDto: this.newRiskLogImageDto,
+          riskLogAttachment: this.riskLogAttachment,
           remark: this.remark
         })
           .then(res => {
@@ -208,7 +208,7 @@ export default {
         // 主任处理操作--非本人发现
         directorConfirm(this.riskId, {
           duplicateFlag: this.duplicateFlag,
-          newRiskLogImageDto: this.newRiskLogImageDto,
+          riskLogAttachment: this.riskLogAttachment,
           remark: this.remark
         })
         .then(res => {

@@ -1,5 +1,5 @@
 <template>
-  <!-- 非负责任人提出 -- 本地负责人 -->
+  <!-- 非负责任人提出 -- 区域管理员确认维修 -->
   <div class="dispose2">
     <van-nav-bar :title="title" fixed placeholder left-arrow @click-left="goBack"></van-nav-bar>
     <div class="dispose2Content">
@@ -9,10 +9,10 @@
         </li>
         <li class="isChangeDeclare">
           <van-radio-group v-model="duplicateFlag">
-            <van-radio :name='false'>未申报</van-radio>
-            <van-radio :name="true">已申报</van-radio>
+            <van-radio :name='false'>未完成</van-radio>
+            <van-radio :name="true">已完成</van-radio>
           </van-radio-group>
-          <van-field v-if="duplicateFlag" placeholder="点击选择" v-model="declared" readonly @click="declaredPicker = true" />
+          <!-- <van-field v-if="duplicateFlag" placeholder="点击选择" v-model="declared" readonly @click="declaredPicker = true" />
           <van-popup v-model="declaredPicker" position="bottom">
             <van-picker
               show-toolbar
@@ -21,7 +21,7 @@
               @confirm="declaredConfirm"
               @cancel="declaredPicker = false"
             />
-          </van-popup>
+          </van-popup> -->
         </li>
         <li class="confirmbutton">
           <van-button type="info" size="small" @click="onConfirm">提交</van-button>
@@ -59,7 +59,7 @@
   </div>
 </template>
 <script>
-import { chargePersonConfirm, apiUploadFile, apiDelUploadFile, apiRiskList, directorConfirm, directorHandle, apiRiskLogList } from '@/services/api/index'
+import { apiRiskList, areaAdminConfirm, apiRiskLogList } from '@/services/api/index'
 export default {
   data () {
     return {
@@ -67,6 +67,7 @@ export default {
       adminDuplicateFlag: '',
       adminDuplicateRiskId: '',
       adminDuplicateRiskTitle: '',
+      repairUserId: '',
       title: '',
       riskId: '',
       handleType: 1,
@@ -101,33 +102,6 @@ export default {
     goBack () {
       this.$router.push('/home')
     },
-    // 上传文件
-    afterRead (file) {
-      const data = new FormData()
-      data.append('file', file.file)
-      file.status = 'uploading'
-      file.message = '上传中...'
-      apiUploadFile(data)
-        .then(res => {
-          if (res.resultCode === 1) {
-            file.status = 'done'
-            file.message = '上传成功'
-            this.riskLogAttachment.attachmentList.push(res.filepath)
-          } else {
-            file.status = 'failed'
-            file.message = '上传失败'
-          }
-        })
-    },
-    delUpload (file, detail) {
-      let filepath = this.riskLogAttachment.attachmentList[detail.index].filepath
-      apiDelUploadFile({ filepath: filepath }).then(res => {
-        if (res.status === 202) {
-          this.riskLogAttachment.attachmentList.splice(detail.index, 1)
-          this.fileList.splice(detail.index, 1)
-        }
-      })
-    },
     // 处理中的安全隐患列表
     getHandleIngRiskList () {
       apiRiskList().then(res => {
@@ -142,16 +116,9 @@ export default {
     },
     // 处理提交
     onConfirm () {
-      if (this.duplicateFlag) {
-        if (!this.declaredId) {
-          this.$toast('请选择已申报项目')
-          return
-        }
-      }
-      chargePersonConfirm(this.riskId, {
-      confirmDuplicateFlag: this.duplicateFlag,
-      duplicateRiskId: this.declaredId,
-      duplicateRiskTitle: this.declared,
+      areaAdminConfirm(this.riskId, {
+      finishFlag: this.duplicateFlag,
+      repairUserId: this.repairUserId,
       riskLogAttachment: this.riskLogAttachment,
       remark: this.remark
     })
@@ -217,8 +184,8 @@ export default {
     }
   },
   async created () {
-    let type = this.$route.query.type
-    let status = this.$route.query.status
+    // let type = this.$route.query.type
+    this.repairUserId = this.$route.query.repairUserId
     this.riskId = this.$route.query.riskId
     this.title = this.$route.query.title
     this.nowUserName = this.$route.query.nowUserName

@@ -43,7 +43,8 @@ const routes = [
       { path: '/dispose3', name: 'dispose3', component: () => import('./../views/repairDetail/3.vue') },
       { path: '/dispose4', name: 'dispose4', component: () => import('./../views/repairDetail/4.vue') },
       { path: '/dispose5', name: 'dispose5', component: () => import('./../views/repairDetail/5.vue') },
-      { path: '/dispose6', name: 'dispose6', component: () => import('./../views/repairDetail/6.vue') }
+      { path: '/dispose6', name: 'dispose6', component: () => import('./../views/repairDetail/6.vue') },
+      { path: '/dispose7', name: 'dispose7', component: () => import('./../views/repairDetail/7.vue') }
     ]
   }
   

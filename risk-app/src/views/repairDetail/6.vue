@@ -37,7 +37,7 @@
         已申报，<span>案件名称：<b>{{ adminDuplicateRiskTitle }}</b></span>
       </div>
       <h2>当前处理人：<span>{{ nowUserName ? nowUserName : '无' }}</span></h2>
-      <van-steps direction="vertical" :active="0">
+      <van-steps direction="vertical" active="0">
         <van-step v-for="(item, index) in riskLogList" :key="index">
           <h3>
             {{ item.riskLog.handlerUserName }}：{{ item.riskLog.createTime | changeDateFormat }} <span v-if="item.riskLog">({{ item.riskLog.intervalTime }})</span>
@@ -77,8 +77,8 @@ export default {
       riskId: '',
       handleType: 1,
       remark: '',
-      newRiskLogImageDto: {
-        riskImages: []
+      riskLogAttachment: {
+        attachmentList: []
       },
       fileList: [],
       radio: '1',
@@ -118,7 +118,7 @@ export default {
           if (res.resultCode === 1) {
             file.status = 'done'
             file.message = '上传成功'
-            this.newRiskLogImageDto.riskImages.push(res.filepath)
+            this.riskLogAttachment.attachmentList.push(res.filepath)
           } else {
             file.status = 'failed'
             file.message = '上传失败'
@@ -126,10 +126,10 @@ export default {
         })
     },
     delUpload (file, detail) {
-      let filepath = this.newRiskLogImageDto.riskImages[detail.index]
+      let filepath = this.riskLogAttachment.attachmentList[detail.index]
       apiDelUploadFile({ filepath: filepath }).then(res => {
         if (res.status === 202) {
-          this.newRiskLogImageDto.riskImages.splice(detail.index, 1)
+          this.riskLogAttachment.attachmentList.splice(detail.index, 1)
           this.fileList.splice(detail.index, 1)
         }
       })
@@ -158,11 +158,11 @@ export default {
           confirmDuplicateFlag: this.duplicateFlag,
           nextUserId: this.chargeId,
           nextUserName: this.chargePeople,
-          newRiskLogImageDto: this.newRiskLogImageDto,
+          riskLogAttachment: this.riskLogAttachment,
           remark: this.remark
         })
           .then(res => {
-            if (res.status === 201) {
+            if (res.status === 200) {
               this.$toast('操作成功')
               this.$router.replace('/home')
             }
@@ -225,7 +225,7 @@ export default {
   async created () {
     let type = this.$route.query.type
     let status = this.$route.query.status
-    this.riskId = this.$route.query.id
+    this.riskId = this.$route.query.riskId
     this.title = this.$route.query.title
     this.nowUserName = this.$route.query.nowUserName
     if (this.$route.query.duplicateFlag) {

@@ -80,8 +80,15 @@ export function apiAddRisk (data) {
 }
 
 // 安全隐患列表
+export function apiRiskPage (data) {
+  return request.get('/risk/page/'+ data.current + '/' + data.pageSize + '?finishedFlag=' + data.finishedFlag + '&onlyMyselfFlag=' + data.onlyMyselfFlag)
+    .then(res => res.data)
+    .catch((e) => e)
+}
+
+// 安全隐患列表---区域管理员
 export function apiRiskList (data) {
-  return request.get('/risk/page/'+ data.current + '/' + data.pageSize + '?status=' + data.status + '&onlyMyselfFlag=' + data.onlyMyselfFlag)
+  return request.get('/risk/log/risk/list')
     .then(res => res.data)
     .catch((e) => e)
 }
@@ -100,37 +107,44 @@ export function apiTypeDict (data) {
     .catch((e) => e)
 }
 
-// 安全隐患类别列表
+// 维修人员列表
 export function apiRepairUserList (data) {
-  return request.get('/riskLog/repairUserList', { params: data })
+  return request.get('/risk/log/repairUserList', { params: data })
     .then(res => res.data)
     .catch((e) => e)
 }
 
 // 安全隐患负责人确认---非本人提出
 export function chargePersonConfirm (riskId, data) {
-  return request.post('/riskLog/confirm/' + riskId, data)
+  return request.post('/risk/log/confirm/' + riskId, data)
     .then(res => res)
     .catch((e) => e)
 }
 
 // 安全隐患主任确认---非本人提出
 export function zhuRenConfirm (riskId, data) {
-  return request.post('/riskLog/check/' + riskId, data)
+  return request.post('/risk/log/check/' + riskId, data)
     .then(res => res)
     .catch((e) => e)
 }
 
 // 安全隐患维修人员确认---非本人提出
 export function weiXiuConfirm (riskId, data) {
-  return request.post('riskLog/repair/' + riskId, data)
+  return request.post('/risk/log/repair/' + riskId, data)
+    .then(res => res)
+    .catch((e) => e)
+}
+
+// 安全隐患负责人确认维修是否完成---非本人提出
+export function areaAdminConfirm (riskId, data) {
+  return request.post('/risk/log/finish/' + riskId, data)
     .then(res => res)
     .catch((e) => e)
 }
 
 // 安全隐患主任提交处理---管理员本人提出
 export function zhuRenHandle (riskId, data) {
-  return request.post('/riskLog/handle/' + riskId, data)
+  return request.post('/risk/log/handle/' + riskId, data)
     .then(res => res)
     .catch((e) => {})
 }
@@ -151,7 +165,7 @@ export function directorHandle (riskId, data) {
 
 // 查看提交记录
 export function apiRiskLogList (data) {
-  return request.get('/riskLog/list/' + data,)
+  return request.get('/risk/log/list/' + data)
     .then(res => res.data)
     .catch((e) => {})
 }

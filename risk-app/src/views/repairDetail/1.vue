@@ -7,16 +7,16 @@
         已申报，<span>案件名称：<b>{{ duplicateRiskTitle }}</b></span>
       </div>
       <h2>当前处理人：<span>{{ nowUserName ? nowUserName : '无' }}</span></h2>
-      <van-steps direction="vertical" :active="0">
+      <van-steps direction="vertical" active="0">
         <van-step v-for="(item, index) in riskLogList" :key="index">
           <h3>
-            {{ item.riskLog.handlerUserName }}：{{ item.riskLog.createTime | changeDateFormat }} <span v-if="item.riskLog">({{ item.riskLog.intervalTime }})</span>
+            {{ item.handlerUserName }}：{{ item.createdTime | formatReplace }} <span v-if="item.createdTime">({{ item.intervalTime }})</span>
           </h3>
           <div class="logContent">
-            <div v-if="item.riskLogImageList" style="display: flex;">
-              <div class="imgBox" v-for=" imgList in item.riskLogImageList " :key="imgList.id">
-                <div v-if="imgList.path" class="imgBoxShow" >
-                  <img :src="'http://39.104.113.97/static/' + imgList.path" @click.stop="changeImg(imgList)" alt="">
+            <div v-if="item.attachmentList.length > 0" style="display: flex;">
+              <div class="imgBox" v-for=" imgList in item.attachmentList " :key="imgList.attachmentId">
+                <div v-if="imgList.filepath" class="imgBoxShow" >
+                  <img :src="'http://39.104.113.97/static/' + imgList.filepath" @click.stop="changeImg(imgList)" alt="">
                 </div>
                 <van-overlay :show="imgShow" @click="imgShow = false">
                   <div class="wrapper previewImg">
@@ -27,7 +27,7 @@
                 </van-overlay>
               </div>
             </div>
-            <p>{{ item.riskLog.remark }}</p>
+            <p>{{ item.remark }}</p>
           </div>
         </van-step>
       </van-steps>
@@ -35,7 +35,7 @@
   </div>
 </template>
 <script>
-import { chargePersonConfirm, apiUploadFile, apiDelUploadFile, apiRiskList, directorConfirm, directorHandle, apiRiskLogList } from '@/services/api/index'
+import { chargePersonConfirm, apiUploadFile, apiDelUploadFile, directorConfirm, directorHandle, apiRiskLogList } from '@/services/api/index'
 export default {
   data () {
     return {
@@ -54,7 +54,7 @@ export default {
     // 预览img
     changeImg (item) {
       this.imgUrl = ''
-      this.imgUrl = 'http://39.104.113.97/static/' + item.path
+      this.imgUrl = 'http://39.104.113.97/static/' + item.filepath
       this.imgShow = true
     },
     // 返回上一页
@@ -64,8 +64,8 @@ export default {
     chanegTimeStamp (arr1, arr2) {
       if (!arr1) return
       if (!arr2) return
-      let newString1 = arr1[0] + '-' + arr1[1] + '-' + arr1[2] + ' ' + arr1[3] + ':' + arr1[4] + ':' + arr1[5]
-      let newString2 = arr2[0] + '-' + arr2[1] + '-' + arr2[2] + ' ' + arr2[3] + ':' + arr2[4] + ':' + arr2[5]
+      let newString1 = arr1.replace('T', ' ')
+      let newString2 = arr2.replace('T', ' ')
       let usedTime = new Date(newString2).getTime() - new Date(newString1).getTime()
       let days = Math.floor(usedTime / (24 * 3600 * 1000)); // 计算出天数
       let leavel = usedTime % (24 * 3600 * 1000); // 计算天数后剩余的时间
@@ -101,12 +101,12 @@ export default {
     getTimeLength (data) {
       for (let i = data.length-1; i >= 0; i--) {
         if (i + 1 === data.length) {
-          if (data[i].riskLog !== 'undefined' && data[i].riskLog) {
-            data[i].riskLog.intervalTime = '开始'
+          if (data[i].createdTime) {
+            data[i].intervalTime = '开始'
           }
         } else {
-          if ((data[i].riskLog  !== 'undefined' && data[i].riskLog) && (data[i + 1].riskLog !== 'undefined' && data[i + 1].riskLog)) {
-            data[i].riskLog.intervalTime = '用时：' + this.chanegTimeStamp(data[i+1].riskLog.createTime, data[i].riskLog.createTime)
+          if (data[i].createdTime && data[i + 1].createdTime) {
+            data[i].intervalTime = '用时：' + this.chanegTimeStamp(data[i+1].createdTime, data[i].createdTime)
           }
         }
       }
@@ -115,7 +115,7 @@ export default {
   async created () {
     let type = this.$route.query.type
     let status = this.$route.query.status
-    this.riskId = this.$route.query.id
+    this.riskId = this.$route.query.riskId
     this.title = this.$route.query.title
     this.nowUserName = this.$route.query.nowUserName
     if (this.$route.query.duplicateFlag) {
@@ -125,8 +125,9 @@ export default {
     this.duplicateRiskTitle = this.$route.query.duplicateRiskTitle
     await apiRiskLogList(this.riskId)
       .then(res => {
-        this.riskLogList = res
-        this.getTimeLength(res)
+        console.log(res)
+        this.riskLogList = res.data
+        this.getTimeLength(res.data)
       })
   }
 }
