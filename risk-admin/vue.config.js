@@ -5,7 +5,7 @@ function resolve (dir) {
   return path.join(__dirname, dir)
 }
 
-const name = defaultSettings.title || '在线考试系统' // page title
+const name = defaultSettings.title || '幼儿园办公平台' // page title
 module.exports = {
   publicPath: './',
 

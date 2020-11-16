@@ -1,6 +1,6 @@
 import defaultSettings from '@/settings'
 
-const title = defaultSettings.title || '在线考试系统'
+const title = defaultSettings.title || '幼儿园办公平台'
 
 export default function getPageTitle (pageTitle) {
   if (pageTitle) {

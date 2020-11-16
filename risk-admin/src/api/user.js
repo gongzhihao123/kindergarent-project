@@ -31,6 +31,14 @@ export function logout () {
   })
 }
 
+// 删除上传
+export function apiDelUpload (data) {
+  return request({
+    url: '/attachment/' + data,
+    method: 'delete'
+  })
+}
+
 // 字典列表
 // 字典列表
 export function dictList (current, size) {

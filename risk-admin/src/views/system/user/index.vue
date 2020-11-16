@@ -83,7 +83,31 @@
               </li>
               <li>
                 <span>头像</span>
-                <el-input v-model="userHeadimg" auto-complete="on" style="width: 310px;"></el-input>
+                <el-upload
+                  :class="{uoloadSty:showBtnImg,disUoloadSty:noneBtnImg}"
+                  :action="uploadPath"
+                  list-type="picture-card"
+                  :on-change="imgChange"
+                  :on-success="uploadSuccess"
+                  :file-list="fileList"
+                  :limit="1"
+                  :auto-upload="true">
+                    <i slot="default" class="el-icon-plus"></i>
+                    <div slot="file" slot-scope="{file}">
+                      <img
+                        class="el-upload-list__item-thumbnail"
+                        :src="file.url" alt=""
+                      >
+                      <span class="el-upload-list__item-actions">
+                        <span
+                          class="el-upload-list__item-delete"
+                          @click="handleRemove(file, fileList)"
+                        >
+                          <i class="el-icon-delete"></i>
+                        </span>
+                      </span>
+                    </div>
+                </el-upload>
               </li>
             </ul>
         </span>
@@ -96,7 +120,7 @@
   </div>
 </template>
 <script>
-import { apiUserList, apiAddUser, apiResetPasseord, apiEditUser, apiDelUser, apiUserRoleList, apiAddUserRole, apiDelUserRole } from '@/api/user'
+import { apiUserList, apiAddUser, apiResetPasseord, apiEditUser, apiDelUser, apiUserRoleList, apiAddUserRole, apiDelUserRole, apiDelUpload } from '@/api/user'
 import { success, error, warning } from '@/utils/notice'
 export default {
   data () {
@@ -148,10 +172,40 @@ export default {
       },
       userRoleList: [],
       checkUserRoleList: [],
-      userId: ''
+      userId: '',
+      // 上传参数
+      fileList: [],
+      showBtnImg: true,
+      noneBtnImg: false,
+      limitCountImg: 1 // 上传图片的最大数量
+    }
+  },
+  computed: {
+    uploadPath () {
+      // const routePath = '/activity'
+      return window.location.origin + '/kindergarten/attachment'
     }
   },
   methods: {
+    // 上传操作
+    // 删除上传图片
+    handleRemove (file, fileList) {
+      apiDelUpload(file.response.data.attachmentId)
+        .then((res) => {
+          if (res.code === 200) {
+            success(res.message)
+            this.fileList = []
+            this.noneBtnImg = false
+            this.thumbnailPath = ''
+          }
+        })
+    },
+    uploadSuccess (res) {
+      this.thumbnailPath = res.data.filepath
+    },
+    imgChange (file, fileList) {
+      this.noneBtnImg = fileList.length >= this.limitCountImg
+    },
     // 分页
     handleCurrentChange (val) {
       this.current = val
@@ -241,14 +295,12 @@ export default {
       })
     },
     clickUser (row) {
-      console.log(row)
       this.userId = row.userId
       this.checkUserRoleList = row.roleList.map(item => {
         return item.roleId
       })
     },
     changeRole (val, e) {
-      console.log(val)
       if (e) {
         // 为true 添加
         apiAddUserRole({ userId: this.userId, roleId: val.roleId }).then(res => {
@@ -367,5 +419,18 @@ export default {
       }
     }
   }
+}
+</style>
+<style>
+.uoloadSty {
+  display: inline-block;
+}
+.uoloadSty .el-upload--picture-card{
+  width:110px;
+  height:110px;
+  line-height:110px;
+}
+.disUoloadSty .el-upload--picture-card{
+  display:none;   /* 上传按钮隐藏 */
 }
 </style>

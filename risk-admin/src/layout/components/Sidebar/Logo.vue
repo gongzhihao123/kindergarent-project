@@ -24,7 +24,7 @@ export default {
   },
   data () {
     return {
-      title: '在线考试系统',
+      title: '幼儿园办公平台',
       logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
     }
   }
