@@ -58,16 +58,16 @@
           <div class="logContent">
             <div class="imgBox" v-for=" imgList in item.riskLogImageList " :key="imgList.id">
               <div v-if="imgList.path" class="imgBoxShow" >
-                <img :src="'http://39.104.113.97/static/' + imgList.path" @click.stop="changeImg(imgList)" alt="">
+                <img :src="'http://123.57.161.229/k-file/' + imgList.path" @click.stop="changeImg(imgList)" alt="">
               </div>
-              <van-overlay :show="imgShow" @click="imgShow = false">
-                <div class="wrapper previewImg">
-                  <div class="previewImgBox">
-                    <img :src="imgUrl" alt="">
-                  </div>
-                </div>
-              </van-overlay>
             </div>
+            <van-overlay :show="imgShow" @click="imgShow = false">
+              <div class="wrapper previewImg">
+                <div class="previewImgBox">
+                  <img :src="imgUrl" alt="">
+                </div>
+              </div>
+            </van-overlay>
             <p>{{ item.riskLog.remark }}</p>
           </div>
         </van-step>
@@ -108,7 +108,7 @@ export default {
     // 预览img
     changeImg (item) {
       this.imgUrl = ''
-      this.imgUrl = 'http://39.104.113.97/static/' + item.path
+      this.imgUrl = 'http://123.57.161.229/k-file/' + item.path
       this.imgShow = true
     },
     // 返回上一页

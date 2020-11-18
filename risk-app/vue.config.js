@@ -60,7 +60,7 @@ module.exports = {
     // 配置多个代理
     proxy: {
       '/kindergarten': {
-        // target: 'http://58.133.87.118:8080',
+        // target: 'http://58.133.87.118:18080',
         target: 'http://123.57.161.229',
         ws: true, // 代理的WebSockets
         changeOrigin: true // 允许websockets跨域

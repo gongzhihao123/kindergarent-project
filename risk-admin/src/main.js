@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './layout/App.vue'
 import './assets/styles/index.scss'
-import './assets/scss/reset.scss'
+// import './assets/scss/reset.scss'
 // import './plugins/element.js'
 import router from './router/index'
 import store from './store/index'

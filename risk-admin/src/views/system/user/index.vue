@@ -84,19 +84,20 @@
               <li>
                 <span>头像</span>
                 <el-upload
+                  ref="my-upload"
                   :class="{uoloadSty:showBtnImg,disUoloadSty:noneBtnImg}"
+                  :file-list="fileList"
                   :action="uploadPath"
                   list-type="picture-card"
-                  :on-change="imgChange"
                   :on-success="uploadSuccess"
-                  :file-list="fileList"
                   :limit="1"
                   :auto-upload="true">
                     <i slot="default" class="el-icon-plus"></i>
-                    <div slot="file" slot-scope="{file}">
+                    <div slot="file"  slot-scope="{file}">
                       <img
+                        v-if="file.filepath"
                         class="el-upload-list__item-thumbnail"
-                        :src="file.url" alt=""
+                        :src="'http://123.57.161.229/k-file/' + file.filepath" alt=""
                       >
                       <span class="el-upload-list__item-actions">
                         <span
@@ -108,6 +109,9 @@
                       </span>
                     </div>
                 </el-upload>
+                <el-dialog :visible.sync="imgdialogVisible">
+                  <img width="100%" :src="dialogImageUrl" alt="">
+                </el-dialog>
               </li>
             </ul>
         </span>
@@ -165,6 +169,7 @@ export default {
       },
       userNickname: '',
       userHeadimg: '',
+      headimgAttachmentId: '',
       addRules: {
         account: [
           { required: true, message: '账号不能为空', trigger: 'blur' }
@@ -177,7 +182,8 @@ export default {
       fileList: [],
       showBtnImg: true,
       noneBtnImg: false,
-      limitCountImg: 1 // 上传图片的最大数量
+      limitCountImg: 1, // 上传图片的最大数量,
+      imgUrl: ''
     }
   },
   computed: {
@@ -190,18 +196,24 @@ export default {
     // 上传操作
     // 删除上传图片
     handleRemove (file, fileList) {
-      apiDelUpload(file.response.data.attachmentId)
+      // 添加删除
+      apiDelUpload(file.attachmentId)
         .then((res) => {
           if (res.code === 200) {
-            success(res.message)
+            this.getUserList()
+            success(res.msg)
             this.fileList = []
             this.noneBtnImg = false
-            this.thumbnailPath = ''
           }
         })
+      this.fileList = fileList.filter(f => f.attachmentId !== file.attachmentId)
+      this.$refs['my-upload'].clearFiles()
     },
     uploadSuccess (res) {
-      this.thumbnailPath = res.data.filepath
+      this.headimgAttachmentId = res.data.attachmentId
+      this.userHeadimg = res.data.filepath
+      this.fileList.push(res.data)
+      success(res.msg)
     },
     imgChange (file, fileList) {
       this.noneBtnImg = fileList.length >= this.limitCountImg
@@ -216,14 +228,20 @@ export default {
       this.addUserDialog = true
       this.isEdit = false
       this.addRuleForm = {}
+      this.userNickname = ''
+      this.fileList = []
     },
     // 修改用户
     editUser (item) {
+      this.fileList = []
       this.isEdit = true
       this.addUserDialog = true
       this.addRuleForm.account = item.account
       this.addRuleForm.userId = item.userId
-      this.userHeadimg = item.user.headimg
+      if (item.imgAttachment) {
+        this.userHeadimg = item.imgAttachment.filepath
+        this.fileList.push(item.imgAttachment)
+      }
       this.userNickname = item.user.nickname
     },
     // 添加用户确认
@@ -233,7 +251,7 @@ export default {
         return
       }
       let user = {
-        headimg: this.userHeadimg,
+        headimgAttachmentId: this.headimgAttachmentId,
         nickname: this.userNickname
       }
       this.addRuleForm.user = user
@@ -296,9 +314,11 @@ export default {
     },
     clickUser (row) {
       this.userId = row.userId
-      this.checkUserRoleList = row.roleList.map(item => {
-        return item.roleId
-      })
+      if (row.roleList.length > 0) {
+        this.checkUserRoleList = row.roleList.map(item => {
+          return item.roleId
+        })
+      }
     },
     changeRole (val, e) {
       if (e) {
@@ -407,6 +427,16 @@ export default {
             span {
               margin-right: 10px;
             }
+            .el-upload-list {
+              .el-upload-list__item {
+                width: 100px;
+                height: 100px;
+                .el-upload-list__item-actions {
+                  width: 100px;
+                  height: 100px;
+                }
+              }
+            }
           }
           li:first-child {
             span:before {
@@ -431,6 +461,6 @@ export default {
   line-height:110px;
 }
 .disUoloadSty .el-upload--picture-card{
-  display:none;   /* 上传按钮隐藏 */
+  display:none;
 }
 </style>

@@ -37,7 +37,7 @@
         已申报，<span>案件名称：<b>{{ adminDuplicateRiskTitle }}</b></span>
       </div>
       <h2>当前处理人：<span>{{ nowUserName ? nowUserName : '无' }}</span></h2>
-      <van-steps direction="vertical" active="0">
+      <van-steps direction="vertical" :active="0">
         <van-step v-for="(item, index) in riskLogList" :key="index">
           <h3>
             {{ item.handlerUserName }}：{{ item.createdTime | formatReplace }} <span>({{ item.intervalTime }})</span>
@@ -46,7 +46,7 @@
             <div v-if="item.attachmentList.length > 0" style="display: flex;">
               <div class="imgBox" v-for=" imgList in item.attachmentList " :key="imgList.attachmentId">
                 <div v-if="imgList.filepath" class="imgBoxShow" >
-                  <img :src="'http://39.104.113.97/static/' + imgList.filepath" @click.stop="changeImg(imgList)" alt="">
+                  <img :src="'http://123.57.161.229/k-file/' + imgList.filepath" @click.stop="changeImg(imgList)" alt="">
                 </div>
                 <van-overlay :show="imgShow" @click="imgShow = false">
                   <div class="wrapper previewImg">
@@ -100,7 +100,7 @@ export default {
     // 预览img
     changeImg (item) {
       this.imgUrl = ''
-      this.imgUrl = 'http://39.104.113.97/static/' + item.path
+      this.imgUrl = 'http://123.57.161.229/k-file/' + item.filepath
       this.imgShow = true
     },
     // 返回上一页
@@ -384,7 +384,7 @@ export default {
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    height: 100%;
+                    height: auto;
                     margin: 0;
                     .previewImgBox {
                       > img {

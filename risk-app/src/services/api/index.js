@@ -8,7 +8,7 @@ export function apiLogin (param) {
     data: param,
     isNeedLogin: true
   })
-    .then(res => res)
+    .then(res => res.data)
     .catch((e) => e)
 }
 

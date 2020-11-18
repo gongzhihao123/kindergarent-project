@@ -37,8 +37,8 @@ export default {
       codeUrl: '',
       captchaKey: '',
       code: '',
-      username: 'admin',
-      password: '123456'
+      username: '',
+      password: ''
     }
   },
   methods: {
@@ -80,11 +80,11 @@ export default {
           rememberMe: false
         })
           .then(res => {
-            if (res.status === 200) {
-              window.localStorage.setItem('loginUserId', res.data.data.user.userId)
+            if (res.code === 200) {
+              window.localStorage.setItem('loginUserId', res.data.user.userId)
               this.$router.replace('/home')
-            } else if (res.response) {
-              this.$toast(res.response.data.message)
+            } else {
+              this.$toast(res.msg)
               this.getCodeImgUrl()
             }
           })

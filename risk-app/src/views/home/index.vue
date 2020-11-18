@@ -7,7 +7,7 @@
       </template>
     </van-nav-bar>
     <div class="home-container">
-      <van-tabs v-model="handleStatus" @click="changeHandleStatus" sticky active="未完成">
+      <van-tabs v-model="handleStatus" @click="changeHandleStatus" sticky>
         <van-sticky :offset-top="43">
           <div class="vanButtonGrounp">
             <!-- <van-button v-for="(item, index) in buttonList" @change="changeHandleStatus" :key="index" :class="changePickerFlag * 1 === index ? 'van-button-activity' : ''"
@@ -81,7 +81,7 @@ export default {
       checked: false,
       switchVal: '全部',
       authority: [],
-      handleStatus: false,
+      handleStatus: 'false',
       handleType: '',
       changePickerFlag: 0,
       completed: 3,
@@ -105,7 +105,6 @@ export default {
     },
     changePicker (id, val) {
       this.handleType = id
-      // this.changePickerFlag = val * 1
       this.getRiskList()
     },
     // 是否本人显示
@@ -166,8 +165,6 @@ export default {
               break
             case 3:
               // 区域管理员确认
-              // let newObj = {}
-              // newObj = Object.assign({ repairUserId: item.repairUserId  }, queryParams)
               this.$router.push({ path: '/dispose7', query: Object.assign({ repairUserId: item.repairUserId  }, queryParams) })
               break
             case 4:
@@ -221,32 +218,7 @@ export default {
         }
       })
     },
-    // // 获取类别列表
-    // getTypeDict() {
-    //   this.buttonList = []
-    //   apiTypeDict({
-    //     status: this.handleStatus,
-    //     type: this.checked
-    //   }).then(res => {
-    //     let arr = []
-    //     let obj = {}
-    //     obj.typeName = '全部'
-    //     obj.type = 0
-    //     if (res.length === 1) {
-    //       obj.count = res[0].count
-    //     } else if (res.length === 2) {
-    //       obj.count = res[0].count + res[1].count
-    //     } else if (res.length === 3) {
-    //       obj.count = res[0].count + res[1].count + res[3].count
-    //     }
-    //     arr.push(obj)
-    //     this.buttonList = res.concat(arr).reverse()
-    //   })
-    // },
     getRiskList () {
-      if (this.handleType * 1 === 0) {
-        this.handleType = ''
-      }
       apiRiskPage({
         pageSize: this.pageSize,
         current: this.current,
@@ -275,7 +247,6 @@ export default {
   },
   async mounted () {
     await this.getRiskList()
-    // this.authority = JSON.parse(window.localStorage.getItem('auth'))
   }
 }
 </script>

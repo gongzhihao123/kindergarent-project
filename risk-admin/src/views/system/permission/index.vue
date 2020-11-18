@@ -26,7 +26,7 @@
             width="600">
             <template slot-scope="scope">
               <el-button size="mini" type="primary" icon="el-icon-edit" @click="editPermission(scope.row)">编辑</el-button>
-              <el-popconfirm title="您确定要删除吗？" @confirm='delPermission(scope.row)'>
+              <el-popconfirm style="margin-left: 10px;" title="您确定要删除吗？" @confirm='delPermission(scope.row)'>
                 <el-button slot="reference" size="mini" icon="el-icon-delete" type="danger">删除</el-button>
               </el-popconfirm>
             </template>

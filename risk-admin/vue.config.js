@@ -35,7 +35,7 @@ module.exports = {
       '/kindergarten': {
         /* 目标代理服务器地址 */
         target: 'http://123.57.161.229',
-        // target: 'http://58.133.87.118:18080',
+        // target: 'http://58.133.87.118:8080',
         ws: true,
         /* 允许跨域 */
         changeOrigin: true
@@ -58,7 +58,7 @@ module.exports = {
       vue: 'Vue',
       vuex: 'Vuex',
       'vue-router': 'VueRouter',
-      // 'element-ui': 'ELEMENT', // 需用MINT
+      'element-ui': 'ELEMENT', // 需用MINT
       axios: 'axios'
     })
     // it can improve the speed of the first screen, it is recommended to turn on preload
