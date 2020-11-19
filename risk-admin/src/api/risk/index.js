@@ -2,7 +2,7 @@ import request from '@/utils/request'
 // 获取区域列表
 export function regionList (data) {
   return request({
-    url: '/risk/area/page/' + data.pageNo + '/' + data.pageSize + '?keyword=' + data.keyword,
+    url: '/riskArea/page/' + data.pageNo + '/' + data.pageSize + '?keyword=' + data.keyword,
     method: 'get'
   })
 }
@@ -10,7 +10,7 @@ export function regionList (data) {
 // 添加区域
 export function addRegion (data) {
   return request({
-    url: '/risk/area',
+    url: '/riskArea',
     method: 'post',
     data
   })
@@ -19,41 +19,24 @@ export function addRegion (data) {
 // 删除区域
 export function delRegion (areaId) {
   return request({
-    url: '/risk/area/' + areaId,
+    url: '/riskArea/' + areaId,
     method: 'delete'
-  })
-}
-
-// 获取区域管理员列表
-export function regionAdminList (params) {
-  return request({
-    url: '/risk/area/admin/list',
-    method: 'get',
-    params
   })
 }
 
 // 添加区域管理员
 export function addRegionAdmin (data) {
   return request({
-    url: '/risk/area/admin',
+    url: '/riskArea/admin',
     method: 'post',
     data
-  })
-}
-
-// 删除区域管理员
-export function delRegionAdmin (areaId, userId) {
-  return request({
-    url: '/risk/area/admin/' + areaId + '/' + userId,
-    method: 'delete'
   })
 }
 
 // 区域管理员--人员列表
 export function regionUserList () {
   return request({
-    url: '/risk/area/userList',
+    url: '/riskArea/userList',
     method: 'get'
   })
 }

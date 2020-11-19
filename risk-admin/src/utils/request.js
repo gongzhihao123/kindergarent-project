@@ -26,6 +26,9 @@ service.interceptors.request.use(
       config.method === 'put' ||
       config.method === 'delete'
     ) {
+      if (config.url === '/manage/userAccount/attachment') {
+        config.headers['Content-Type'] = 'multipart/form-data'
+      }
       config.data = JSON.stringify(config.data)
     }
     return config

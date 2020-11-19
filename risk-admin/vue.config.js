@@ -34,8 +34,8 @@ module.exports = {
       // http://123.57.161.229/kindergarten/manage/dict/page/1/10
       '/kindergarten': {
         /* 目标代理服务器地址 */
-        target: 'http://123.57.161.229',
-        // target: 'http://58.133.87.118:8080',
+        // target: 'http://123.57.161.229',
+        target: 'http://58.133.87.118:18080',
         ws: true,
         /* 允许跨域 */
         changeOrigin: true

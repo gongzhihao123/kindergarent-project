@@ -1,10 +1,11 @@
 import {
   apiLogin,
+  userInfo,
   logout } from '@/api/user'
 // , getInfo
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
-import { error } from '@/utils/notice'
+// import { error } from '@/utils/notice'
 
 function handlePermiss (arr) {
   return arr.map(item => {
@@ -42,20 +43,13 @@ const actions = {
   // user login
   login ({ commit }, userInfo) {
     let token = '1'
-    console.log(token)
     setToken(token)
     return new Promise((resolve, reject) => {
       apiLogin(userInfo).then(response => {
         // commit('SET_ROLES', handlePermiss(response.data.permissionList))
-        console.log(response)
-        if (response.data.permissionList.length > 0) {
-          window.localStorage.setItem('roles', JSON.stringify(handlePermiss(response.data.permissionList)))
-          commit('SET_TOKEN', token)
-          setToken(token)
-          resolve()
-        } else {
-          error('没有权限')
-        }
+        commit('SET_TOKEN', token)
+        setToken(token)
+        resolve()
       }).catch(error => {
         reject(error)
       })
@@ -65,17 +59,15 @@ const actions = {
   // get user info
   getInfo ({ commit, state }) {
     return new Promise((resolve, reject) => {
-      const response = {
-        roles: JSON.parse(window.localStorage.getItem('roles'))
-      }
-
-      if (response) {
-        commit('SET_ROLES', response.roles)
-        resolve(response)
-      } else {
-        // eslint-disable-next-line prefer-promise-reject-errors
-        reject('error')
-      }
+      userInfo().then(res => {
+        let newObj = {
+          roles: handlePermiss(res.data.permissionList)
+        }
+        commit('SET_ROLES', newObj.roles)
+        resolve(newObj)
+      }).catch(error => {
+        reject(error)
+      })
     })
   },
 

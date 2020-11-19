@@ -81,8 +81,7 @@ export default {
         })
           .then(res => {
             if (res.code === 200) {
-              window.localStorage.setItem('loginUserId', res.data.user.userId)
-              this.$router.replace('/home')
+              this.$router.replace('/homePage')
             } else {
               this.$toast(res.msg)
               this.getCodeImgUrl()

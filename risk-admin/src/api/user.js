@@ -15,9 +15,9 @@ export function apiCodeImgUrl (token) {
   })
 }
 
-export function getInfo (token) {
+export function userInfo (token) {
   return request({
-    url: '/vue-element-admin/user/info',
+    url: '/userInfo',
     method: 'get',
     params: { token }
   })
@@ -34,7 +34,7 @@ export function logout () {
 // 删除上传
 export function apiDelUpload (data) {
   return request({
-    url: '/attachment/' + data,
+    url: '/manage/userAccount/attachment/' + data,
     method: 'delete'
   })
 }

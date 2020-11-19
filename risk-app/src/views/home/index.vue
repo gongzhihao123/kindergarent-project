@@ -38,6 +38,7 @@
                   </dd>
                 </dl>
                 <div>
+                  <van-tag type="warning">{{ item.typeLabel }}</van-tag>
                   <van-button :type="quanxiankongzhiButton(item) ? 'info' : 'warning'" size="small" @click="goHandle(item, 2)">{{ quanxiankongzhiButton(item) ? '查看' : '处理' }}</van-button>
                 </div>
               </li>
@@ -62,6 +63,7 @@
                   </dd>
                 </dl>
                 <div>
+                  <van-tag type="warning">{{ item.typeLabel }}</van-tag>
                   <van-button :type="quanxiankongzhiButton(item) ? 'info' : 'warning'" size="small" @click="goHandle(item, 2)">{{ quanxiankongzhiButton(item) ? '查看' : '处理' }}</van-button>
                 </div>
               </li>
@@ -74,7 +76,7 @@
   </div>
 </template>
 <script>
-import { apiStatusDict, apiTypeDict, apiRiskPage } from '@/services/api/index'
+import { apiRiskPage } from '@/services/api/index'
 export default {
   data () {
     return {
@@ -101,7 +103,7 @@ export default {
   methods: {
     // 返回主页
     onClickLeft () {
-      window.location.href = 'http://39.104.113.97'
+      this.$router.push('/homePage')
     },
     changePicker (id, val) {
       this.handleType = id
@@ -208,16 +210,6 @@ export default {
         }
       }
     },
-    // 获取状态列表
-    getStatusDict() {
-      apiStatusDict().then(res => {
-        if (res.data.length > 0) {
-          this.tabList = res.data
-        } else {
-          this.tabList = []
-        }
-      })
-    },
     getRiskList () {
       apiRiskPage({
         pageSize: this.pageSize,
@@ -313,6 +305,15 @@ export default {
                       font-size: 12px;
                       color: #666;
                     }
+                  }
+                }
+                > div {
+                  display: flex;
+                  align-items: center;
+                  .van-tag {
+                    position: absolute;
+                    right: 64px;
+                    margin-right: 10px;
                   }
                 }
                 .van-button {

@@ -35,7 +35,7 @@
             <el-table-column
               fixed="right"
               label="操作"
-              width="600">
+              width="370">
               <template slot-scope="scope">
                 <el-button size="mini" type="info" icon="el-icon-refresh-left" @click="reset(scope.row)">重置密码</el-button>
                 <el-button size="mini" type="primary" icon="el-icon-edit" @click="editUser(scope.row)">修改账号</el-button>
@@ -189,7 +189,7 @@ export default {
   computed: {
     uploadPath () {
       // const routePath = '/activity'
-      return window.location.origin + '/kindergarten/attachment'
+      return window.location.origin + '/kindergarten/manage/userAccount/attachment'
     }
   },
   methods: {
@@ -206,7 +206,7 @@ export default {
             this.noneBtnImg = false
           }
         })
-      this.fileList = fileList.filter(f => f.attachmentId !== file.attachmentId)
+      this.fileList = fileList.filter(f => f.attachmentId * 1 !== file.attachmentId * 1)
       this.$refs['my-upload'].clearFiles()
     },
     uploadSuccess (res) {
@@ -246,8 +246,12 @@ export default {
     },
     // 添加用户确认
     addUserDialogConfirm () {
+      let accountReg = /^[0-9a-zA-Z_]{6,12}$/
       if (!this.addRuleForm.account) {
         warning('账号不能为空')
+        return
+      } else if (!accountReg.test(this.addRuleForm.account)) {
+        warning('请输入6到12位账号')
         return
       }
       let user = {

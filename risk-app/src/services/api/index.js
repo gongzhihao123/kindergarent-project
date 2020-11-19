@@ -12,6 +12,17 @@ export function apiLogin (param) {
     .catch((e) => e)
 }
 
+export function apiUserInfo (param) {
+  return request({
+    url: '/userInfo',
+    method: 'get',
+    data: param,
+    isNeedLogin: true
+  })
+    .then(res => res.data)
+    .catch((e) => e)
+}
+
 // 注册
 export function apiReg (data) {
   return request({
@@ -38,7 +49,7 @@ export function apiCodeImgUrl (parameter) {
 // 区域列表
 export function apiAreaList (data) {
   return request({
-    url: '/risk/area/page/' + data.current + '/' + data.pageSize,
+    url: '/riskArea/page/' + data.current + '/' + data.pageSize,
     method: 'get',
     isNeedLogin: true
   })
@@ -46,23 +57,16 @@ export function apiAreaList (data) {
     .catch((e) => {})
 }
 
-// 区域管理员列表
-export function apiAreaAdminList (data) {
-  return request.get('/area/admin/list', { params: data })
-    .then(res => res.data)
-    .catch((e) => {})
-}
-
 // 上传文件
 export function apiUploadFile (data) {
-  return request.post('/attachment', data)
+  return request.post('/riskLogAttachment/attachment', data)
     .then(res => res.data)
     .catch((e) => {})
 }
 
 // 删除上传文件
 export function apiDelUploadFile (data) {
-  return request.delete('/attachment/' + data)
+  return request.delete('/riskLogAttachment/attachment/' + data)
     .then(res => res.data)
     .catch((e) => {})
 }
@@ -88,63 +92,49 @@ export function apiRiskPage (data) {
 
 // 安全隐患列表---区域管理员
 export function apiRiskList (data) {
-  return request.get('/risk/log/risk/list')
-    .then(res => res.data)
-    .catch((e) => e)
-}
-
-// 安全隐患状态列表
-export function apiStatusDict () {
-  return request.get('/risk/statusDict')
-    .then(res => res.data)
-    .catch((e) => e)
-}
-
-// 安全隐患类别列表
-export function apiTypeDict (data) {
-  return request.get('/risk/typeDict', { params: data })
+  return request.get('/riskLog/risk/list')
     .then(res => res.data)
     .catch((e) => e)
 }
 
 // 维修人员列表
 export function apiRepairUserList (data) {
-  return request.get('/risk/log/repairUserList', { params: data })
+  return request.get('/riskLog/repairUserList', { params: data })
     .then(res => res.data)
     .catch((e) => e)
 }
 
 // 安全隐患负责人确认---非本人提出
 export function chargePersonConfirm (riskId, data) {
-  return request.post('/risk/log/confirm/' + riskId, data)
+  return request.post('/riskLog/confirm/' + riskId, data)
     .then(res => res)
     .catch((e) => e)
 }
 
 // 安全隐患主任确认---非本人提出
 export function zhuRenConfirm (riskId, data) {
-  return request.post('/risk/log/check/' + riskId, data)
+  return request.post('/riskLog/check/' + riskId, data)
     .then(res => res)
     .catch((e) => e)
 }
 
 // 安全隐患维修人员确认---非本人提出
 export function weiXiuConfirm (riskId, data) {
-  return request.post('/risk/log/repair/' + riskId, data)
+  return request.post('/riskLog/repair/' + riskId, data)
     .then(res => res)
     .catch((e) => e)
 }
 
 // 安全隐患负责人确认维修是否完成---非本人提出
 export function areaAdminConfirm (riskId, data) {
-  return request.post('/risk/log/finish/' + riskId, data)
+  return request.post('/riskLog/finish/' + riskId, data)
     .then(res => res)
     .catch((e) => e)
 }
 
 // 安全隐患主任提交处理---管理员本人提出
 export function zhuRenHandle (riskId, data) {
-  return request.post('/risk/log/handle/' + riskId, data)
+  return request.post('/riskLog/handle/' + riskId, data)
     .then(res => res)
     .catch((e) => {})
 }
@@ -165,7 +155,7 @@ export function directorHandle (riskId, data) {
 
 // 查看提交记录
 export function apiRiskLogList (data) {
-  return request.get('/risk/log/list/' + data)
+  return request.get('/riskLog/list/' + data)
     .then(res => res.data)
     .catch((e) => {})
 }

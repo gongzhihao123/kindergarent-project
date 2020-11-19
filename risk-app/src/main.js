@@ -38,12 +38,14 @@ import {
   Empty,
   Overlay,
   Switch,
-  Pagination
+  Pagination,
+  Tag
 } from 'Vant'
 Vue
   .use(Toast).use(Icon).use(NavBar).use(Button).use(Form).use(Field).use(Popup).use(Picker).use(Sticky)
   .use(Tab).use(Tabs).use(List).use(Cell).use(CellGroup).use(Uploader).use(Radio).use(RadioGroup).use(Step)
   .use(Steps).use(Checkbox).use(CheckboxGroup).use(VanImage).use(Empty).use(Overlay).use(Switch).use(Pagination)
+  .use(Tag)
 
 FastClick.attach(document.body)
 

@@ -30,8 +30,7 @@
             </el-table-column>
             <el-table-column
               fixed="right"
-              label="操作"
-              width="600">
+              label="操作">
               <template slot-scope="scope">
                 <!-- <el-button size="mini" type="primary" icon="el-icon-edit" @click.native.stop="edit(scope.row)">编辑</el-button> -->
                 <el-button size="mini" icon="el-icon-delete" type="danger" @click.native.stop='delArea(scope.row)'>删除</el-button>
@@ -205,16 +204,6 @@ export default {
         .catch(res => {
           error(res.msg)
         })
-      // } else {
-      //   // 为false 删除
-      //   delRegionAdmin(this.areaId, val.userId).then(res => {
-      //     success(res.msg)
-      //     this.getregionList()
-      //   })
-      //     .catch(res => {
-      //       error(res.msg)
-      //     })
-      // }
     },
     // 区域人员列表
     getRegionUserList () {

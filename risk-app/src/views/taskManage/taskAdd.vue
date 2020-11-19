@@ -1,65 +1,62 @@
 <template>
-  <div class="repair">
-    <van-nav-bar title="添加新隐患" left-arrow @click-left="goHome"></van-nav-bar>
+  <div class="taskAdd">
+    <van-nav-bar title="新的工作" left-arrow @click-left="goHome"></van-nav-bar>
     <van-cell-group>
       <van-field v-model="title" label="标题" clearable placeholder="请输入标题" />
-      <van-field v-model="riskLog.remark" rows="3" autosize label="描述" type="textarea" placeholder="请输入描述" />
+      <van-field v-model="workLogNewDTO.remark" rows="3" autosize label="描述" type="textarea" placeholder="请输入描述" />
       <van-cell title="上传" class="vantUpload">
         <template #right-icon>
-          <van-uploader  v-model="temUploadFile" :after-read="afterRead" :max-size="10 * 1024 * 1024" @oversize="onOversize" :before-delete="delUpload" multiple />
+          <van-uploader  v-model="temUploadFile" :after-read="afterRead" :before-delete="delUpload" multiple />
         </template>
       </van-cell>
-      <van-field class="beLongArea" label="所属区域" v-model="area" placeholder="点击选择区域" @click="areaPicker = true" readonly />
-      <van-popup v-model="areaPicker" position="bottom">
+      <van-field label="指派给" v-model="nowHandleUserName" placeholder="请选择" @click="handleUsernameFlag = true" readonly />
+      <van-popup v-model="handleUsernameFlag" position="bottom">
         <van-picker
           show-toolbar
-          value-key="areaName"
-          :columns="areaList"
-          @confirm="areaConfirm"
-          @cancel="areaPicker = false"
+          value-key="nickname"
+          :columns="handleUsernameList"
+          @confirm="handleUsernameConfirm"
+          @cancel="handleUsernameFlag = false"
         />
-        <van-pagination v-if="areaTotal" v-model="current" force-ellipses :total-items="areaTotal" :show-page-size="3" />
       </van-popup>
     </van-cell-group>
-    <div class="repairFood">
+    <div class="taskAddFood">
       <van-button plain type="info" size="small" @click="$router.push('/home')">取消</van-button>
       <van-button type="info" @click="onConfirm" size="small">提交</van-button>
     </div>
   </div>
 </template>
 <script>
-import { apiAreaList, apiUploadFile, apiAddRisk, apiDelUploadFile } from '@/services/api/index'
+import { apiUserlist, apiUploadFile, apiDelUploadFile, apiAddWork } from '@/services/api/taskManage'
 export default {
   data () {
     return {
-      current: 1,
-      pageSize: 6,
-      areaTotal: '',
       title: '',
-      riskLog: {
+      workLogNewDTO: {
+        endFlag: false,
         remark: '',
-        riskLogAttachment: {
+        workLogAttachmentNewDTO: {
           attachmentList: []
-        }
+        },
+        toUserId: '',
+        toUserName: ''
       },
+      fileList: [],
       temUploadFile: [],
       uploadFile: '',
       area: '',
       areaId: '',
-      areaList: [],
+      handleUsernameList: [],
       areaAdminUserList: [],
-      adminUserId: '',
-      adminUserName: '',
-      areaPicker: false
+      nowHandleUserId: '',
+      nowHandleUserName: '',
+      handleUsernameFlag: false
     }
   },
   methods: {
     // 返回首页
     goHome () {
-      this.$router.push('/home')
-    },
-    onOversize () {
-      this.$toast('文件大小不能超过10M')
+      this.$router.push('/taskManage')
     },
     // 上传文件
     afterRead (file) {
@@ -72,7 +69,12 @@ export default {
           if (res.code === 200) {
             file.status = 'done'
             file.message = '上传成功'
-            this.riskLog.riskLogAttachment.attachmentList.push(res.data)
+            let obj = {}
+            obj.filepath = res.data.filepath
+            obj.filename = res.data.filename
+            obj.attachmentId = res.data.attachmentId
+            this.workLogNewDTO.workLogAttachmentNewDTO.attachmentList.push(obj)
+            this.fileList.push(res.data)
           } else {
             file.status = 'failed'
             file.message = '上传失败'
@@ -89,7 +91,7 @@ export default {
         let attachmentId = this.riskLog.riskLogAttachment.attachmentList[detail.index].attachmentId
         apiDelUploadFile(attachmentId).then(res => {
           if (res.code === 200) {
-            this.riskLog.riskLogAttachment.attachmentList.splice(detail.index, 1)
+            this.workLogNewDTO.workLogAttachmentNewDTO.attachmentList.splice(detail.index, 1)
             this.temUploadFile.splice(detail.index, 1)
           }
         })
@@ -98,18 +100,11 @@ export default {
         this.temUploadFile.splice(detail.index, 1)
       }
     },
-    // 区域选择确认
-    async areaConfirm (val) {
-      if (val.admin) {
-        this.adminUserName = val.admin.nickname
-        this.adminUserId = val.admin.userId
-      } else {
-        this.$toast('该区域目前并无管理人员')
-      }
-      this.area = val.areaName
-      this.areaId = val.areaId
-      this.areaPicker = false
-      
+    // 人员选择确认
+    handleUsernameConfirm (val) {
+      this.nowHandleUserName = val.nickname
+      this.nowHandleUserId = val.userId
+      this.handleUsernameFlag = false
     },
     // 验证
     checkFrom () {
@@ -117,17 +112,20 @@ export default {
       if (!this.title) {
         this.$toast('标题不能为空')
         return false
-      }
-       else if (!titleTest.test(this.title)) {
+      } else if (!titleTest.test(this.title)) {
         this.$toast('标题6个12字符')
         return false
       }
-      if (!this.riskLog.remark) {
+      if (!this.workLogNewDTO.remark) {
         this.$toast('描述不能为空')
         return false
       }
-      if (!this.area) {
-        this.$toast('请选择区域')
+      // if (this.workLogNewDTO.workLogAttachmentNewDTO.length === 0) {
+      //   this.$toast('还未上传内容')
+      //   return false
+      // }
+      if (!this.nowHandleUserId) {
+        this.$toast('请选择指派人')
         return false
       }
       return true
@@ -135,46 +133,45 @@ export default {
     // 表单提交
     onConfirm () {
       if (this.checkFrom()) {
-        apiAddRisk({
-          adminUserId: this.adminUserId,
-          adminUserName: this.adminUserName,
-          areaId: this.areaId,
-          riskLog: this.riskLog,
+        this.workLogNewDTO.toUserId = this.nowHandleUserId
+        this.workLogNewDTO.toUserName = this.nowHandleUserName
+        apiAddWork({
+          workLogNewDTO: this.workLogNewDTO,
           title: this.title
         })
           .then(res => {
+            console.log(res)
             if (res.status === 200) {
-              this.$router.push('/home')
+              this.$router.push('/taskManage')
             }
           })
       }
     },
     // 获取区域列表
-    getAreaList () {
-      apiAreaList({ current: this.current, pageSize: this.pageSize }).then(res => {
-        this.areaList = res.data.records
-        this.areaTotal = res.data.total
+    gethandleUsernameList () {
+      apiUserlist().then(res => {
+        console.log(res.data)
+        this.handleUsernameList = res.data
       })
     }
   },
   mounted () {
-    this.getAreaList()
+    this.gethandleUsernameList()
   }
 }
 </script>
 <style lang="scss">
-.repair {
+.taskAdd {
   .van-nav-bar {
     .van-icon {
       color: #000;
     }
   }
   .van-cell-group {
-    padding: 5px;
+    padding: 0 15px;
     .van-field {
-      font-size: 16px;
       .van-cell__title {
-        width: 4.6em;
+        width: 4em;
         text-align: right;
       }
       .van-cell__value {
@@ -190,7 +187,7 @@ export default {
         margin-right: 12px;
         span {
           display: inline-block;
-          width: 5.3em;
+          width: 4em;
         }
       }
       .van-uploader {
@@ -211,18 +208,14 @@ export default {
         }
       }
     }
-    .beLongArea {
-      align-items: center;
-    }
   }
-  .repairFood {
+  .taskAddFood {
     margin-top: 20px;
     text-align: center;
     .van-button {
       margin: 0 10px;
       padding:  10px 20px;
       border-radius: 15px;
-      font-size: 16px;
     }
     .van-button:first-child {
       color: #fff;

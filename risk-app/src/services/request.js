@@ -35,11 +35,13 @@ request.interceptors.request.use(function (config) {
       config.method === 'delete' ||
       config.method === 'patch'
   ) {
-    if (config.url !== '/attachment') {
+    if (config.url === '/workLogAttachment/attachment') {
+      config.headers['Content-Type'] = 'multipart/form-data'
+    } else if (config.url === '/riskLogAttachment/attachment') {
+      config.headers['Content-Type'] = 'multipart/form-data'
+    } else {
       config.headers['Content-Type'] = 'application/json;charse=UTF-8'
       config.data = JSON.stringify(config.data)
-    } else {
-      config.headers['Content-Type'] = 'multipart/form-data'
     }
   } else {
     if (!config.data) {

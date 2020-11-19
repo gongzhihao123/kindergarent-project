@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import riskRoutes from './modules/risk'
+import taskRoutes from './modules/taskManage'
 
 const originalPush = Router.prototype.push
 Router.prototype.push = function push (location) {
@@ -89,7 +90,8 @@ export const asyncRoutes = [
       }
     ]
   },
-  riskRoutes
+  riskRoutes,
+  taskRoutes
 ]
 
 const createRouter = () => new Router({

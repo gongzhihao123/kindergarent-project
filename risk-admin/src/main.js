@@ -5,10 +5,13 @@ import './assets/styles/index.scss'
 // import './plugins/element.js'
 import router from './router/index'
 import store from './store/index'
+import * as filters from './filters/index'
 import './icons' // icon
 import './permission' // permission control
 
 Vue.config.productionTip = false
+// 实例化过滤器
+Object.keys(filters).forEach(k => Vue.filter(k, filters[k]))
 
 const app = new Vue({
   el: '#app',

@@ -23,14 +23,16 @@ const routes = [
   {
     path: '/',
     name: 'index',
-    redirect: '/home',
+    redirect: '/homePage',
     component: index,
     children: [
+      { path: '/homePage', name: 'homePage', component: () => import('./../views/home/homePage.vue') },
       { path: '/home', name: 'home', component: () => import('./../views/home/index.vue') },
       { path: '/repair', name: 'repair', component: () => import('./../views/repair/index.vue') },
-      // { path: '/dispose', name: 'dispose', component: () => import('./../views/repairDetail/dispose.vue') },
-      // { path: '/1', name: '1', component: () => import('./../views/repairDetail/1.vue') },
-      { path: '/list', name: 'list', component: () => import('./../views/list/index.vue') }
+      { path: '/list', name: 'list', component: () => import('./../views/list/index.vue') },
+      { path: '/taskManage', name: 'taskManage', component: () => import('./../views/taskManage/index.vue') },
+      { path: '/taskAdd', name: 'taskAdd', component: () => import('./../views/taskManage/taskAdd.vue') },
+      { path: '/taskHandle1', name: 'taskHandle1', component: () => import('./../views/taskManage/taskHandle/handle1.vue') }
     ]
   },
   {
