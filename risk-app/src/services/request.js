@@ -79,7 +79,6 @@ request.interceptors.response.use(function (response) {
 }, error => {
   // 对响应错误做点什么
   Toast.clear()
-  console.log(error.response)
   if (error.response.status * 1 === 401) {
     router.replace('/login')
   }

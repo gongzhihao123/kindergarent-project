@@ -1,40 +1,13 @@
 <template>
   <div class="index">
     <router-view></router-view>
-    <!-- <Footer></Footer> -->
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-// import Footer from './../components/common/footer'
-// import { apiList } from '@/services/api/index'
 
 export default {
-  name: 'index',
-  // components: {
-  //   Footer
-  // },
-  methods: {
-    getApi () {
-      apiTest()
-        .then((res) => {
-          console.log('sd', res)
-        })
-    },
-    // getList () {
-    //   apiList({
-    //     pageNo: 1,
-    //     pageSize: 10,
-    //     applyState: 1
-    //   })
-    //     .then((res) => {
-    //       console.log('sss', res)
-    //     })
-    // }
-  },
-  mounted () {
-  }
+  name: 'index'
 }
 </script>
 

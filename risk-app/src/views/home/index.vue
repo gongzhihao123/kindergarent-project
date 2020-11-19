@@ -137,7 +137,8 @@ export default {
     // 去处理详情页
     goHandle (item, index) {
       // 非本人提出
-      let loginUserId = window.localStorage.getItem('loginUserId')
+      let userInfo = JSON.parse(window.localStorage.getItem('userInfo'))
+      let loginUserId = userInfo.user.userId
       let queryParams = { nowUserName: item.nowUserName, title: item.title, riskId: item.riskId,
               duplicateFlag: item.duplicateFlag, duplicateRiskId: item.duplicateRiskId, duplicateRiskTitle: item.duplicateRiskTitle, adminUserId: item.adminUserId }
       if (item.type * 1 === 2) {

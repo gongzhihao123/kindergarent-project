@@ -69,7 +69,7 @@
         <span>
           <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
             <el-form-item label="区域名称" prop="areaName">
-              <el-input v-model="ruleForm.areaName" style="width: 370px;" />
+              <el-input v-model="ruleForm.areaName" />
             </el-form-item>
             <el-form-item label="区域排序" prop="sort">
               <el-input-number
@@ -77,7 +77,6 @@
                 :min="0"
                 :max="999"
                 controls-position="right"
-                style="width: 370px;"
               />
             </el-form-item>
           </el-form>
