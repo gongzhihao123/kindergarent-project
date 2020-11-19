@@ -101,9 +101,7 @@ export default {
       return true
     },
     submit () {
-      
       if (this.checkBox()) {
-        console.log(this.user.password)
         let encrPassword = encrypt(this.user.password)
         apilogin1({
           account: this.user.name,

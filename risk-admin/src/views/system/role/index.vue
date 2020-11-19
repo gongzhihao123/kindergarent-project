@@ -22,7 +22,7 @@
             <el-table-column
               fixed="right"
               label="操作"
-              width="300">
+              width="180">
               <template slot-scope="scope">
                 <el-button size="mini" type="primary" icon="el-icon-edit" @click.native.stop="editRole(scope.row)">编辑</el-button>
                 <el-button size="mini" icon="el-icon-delete" type="danger" @click.native.stop='delRole(scope.row)'>删除</el-button>

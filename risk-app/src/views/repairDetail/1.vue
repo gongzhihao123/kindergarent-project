@@ -125,7 +125,6 @@ export default {
     this.duplicateRiskTitle = this.$route.query.duplicateRiskTitle
     await apiRiskLogList(this.riskId)
       .then(res => {
-        console.log(res)
         this.riskLogList = res.data
         this.getTimeLength(res.data)
       })

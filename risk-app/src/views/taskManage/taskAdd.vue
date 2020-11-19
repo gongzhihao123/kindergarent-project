@@ -140,7 +140,6 @@ export default {
           title: this.title
         })
           .then(res => {
-            console.log(res)
             if (res.status === 200) {
               this.$router.push('/taskManage')
             }
@@ -150,7 +149,6 @@ export default {
     // 获取区域列表
     gethandleUsernameList () {
       apiUserlist().then(res => {
-        console.log(res.data)
         this.handleUsernameList = res.data
       })
     }

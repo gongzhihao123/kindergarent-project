@@ -45,6 +45,7 @@ export default {
       // 列表
       current: 1,
       size: 10,
+      total: 0,
       list: [],
       workList: [],
       loading: false,
@@ -64,20 +65,8 @@ export default {
     },
     onLoad() {
       // 异步更新数据
-      // setTimeout 仅做示例，真实场景中一般为 ajax 请求
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          this.list.push(this.list.length + 1);
-        }
-
-        // 加载状态结束
-        this.loading = false;
-
-        // 数据全部加载完成
-        if (this.list.length >= 3) {
-          this.finished = true;
-        }
-      }, 1000);
+      this.current++
+      this.getWorkList()
     },
     // 去添加
     goTaskAdd () {
@@ -93,7 +82,19 @@ export default {
         size: this.size,
         type: this.changePickerFlag
       }).then(res => {
-        this.workList = res.data.records
+        let dataArr = res.data.records
+        this.total = res.data.total
+        this.loading = false
+        if (dataArr == null || dataArr.length === 0) {
+          // 加载结束
+          this.finished = true
+          return
+        }
+        // 数据合并
+        this.workList = this.workList.concat(dataArr)
+        if (this.workList.length >= this.total) {
+          this.finished = true
+        }
       })
     }
   },

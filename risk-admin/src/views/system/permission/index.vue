@@ -23,7 +23,7 @@
           <el-table-column
             fixed="right"
             label="操作"
-            width="300">
+            width="200">
             <template slot-scope="scope">
               <el-button size="mini" type="primary" icon="el-icon-edit" @click="editPermission(scope.row)">编辑</el-button>
               <el-popconfirm style="margin-left: 10px;" title="您确定要删除吗？" @confirm='delPermission(scope.row)'>

@@ -35,7 +35,7 @@
             <el-table-column
               fixed="right"
               label="操作"
-              width="370">
+              width="320">
               <template slot-scope="scope">
                 <el-button size="mini" type="info" icon="el-icon-refresh-left" @click="reset(scope.row)">重置密码</el-button>
                 <el-button size="mini" type="primary" icon="el-icon-edit" @click="editUser(scope.row)">修改账号</el-button>
@@ -318,6 +318,7 @@ export default {
     },
     clickUser (row) {
       this.userId = row.userId
+      this.checkUserRoleList = []
       if (row.roleList.length > 0) {
         this.checkUserRoleList = row.roleList.map(item => {
           return item.roleId

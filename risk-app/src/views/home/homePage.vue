@@ -24,9 +24,8 @@ export default {
   methods: {
     getUserInfo () {
       apiUserInfo().then(res => {
-        console.log(res)
         if (res.code === 200) {
-          window.localStorage.setItem('loginUserId', res.data.user.userId)
+          window.localStorage.setItem('userInfo', JSON.stringify(res.data))
         } else {
           this.$router.push('/login')
         }

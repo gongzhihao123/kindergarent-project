@@ -13,7 +13,7 @@
             <!-- <van-button v-for="(item, index) in buttonList" @change="changeHandleStatus" :key="index" :class="changePickerFlag * 1 === index ? 'van-button-activity' : ''"
             size="small" @click="changePicker(item.type, index)">{{ item.typeName }}({{ item.count }})</van-button> -->
             <!-- <van-switch v-model="checked" size="24px" /> -->
-            <van-cell center :title="switchVal">
+            <van-cell center :title="switchVal" v-if="this.isShowSwitch">
               <template #right-icon>
                 <van-switch @change="changeSwitch" v-model="checked" size="24" />
               </template>
@@ -38,7 +38,7 @@
                   </dd>
                 </dl>
                 <div>
-                  <van-tag type="warning">{{ item.typeLabel }}</van-tag>
+                  <van-tag v-if="isShowTag(item)" type="warning">{{ item.typeLabel }}</van-tag>
                   <van-button :type="quanxiankongzhiButton(item) ? 'info' : 'warning'" size="small" @click="goHandle(item, 2)">{{ quanxiankongzhiButton(item) ? '查看' : '处理' }}</van-button>
                 </div>
               </li>
@@ -93,11 +93,13 @@ export default {
       buttonList: [],
       current: 1,
       pageSize: 10,
+      total: 0,
       // 列表
       list: [],
       loading: false,
       finished: false,
-      normalButtonFlag: 1
+      normalButtonFlag: 1,
+      isShowSwitch: false
     }
   },
   methods: {
@@ -113,7 +115,7 @@ export default {
     changeSwitch (val) {
       this.checked = val
       if (val) {
-        this.switchVal = '仅显示本人'
+        this.switchVal = '负责区域内非本人上报'
       } else {
         this.switchVal = '全部'
       }
@@ -121,24 +123,12 @@ export default {
     },
     // 切换处理状态
     async changeHandleStatus (data) {
-      console.log(data)
       this.handleStatus = data
       await this.getRiskList()
     },
     onLoad() {
-      // 异步更新数据
-      // setTimeout 仅做示例，真实场景中一般为 ajax 请求
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          this.list.push(this.list.length + 1);
-        }
-        // 加载状态结束
-        this.loading = false;
-        // 数据全部加载完成
-        if (this.list.length >= this.riskList.length) {
-          this.finished = true;
-        }
-      }, 1000);
+      this.current++
+      this.getRiskList()
     },
     // 去报修
     goRepair () {
@@ -217,13 +207,36 @@ export default {
         finishedFlag: this.handleStatus,
         onlyMyselfFlag: this.checked
       }).then(res => {
-        this.riskList = res.data.records
+        let dataArr = res.data.records
+        this.total = res.data.total
+        this.loading = false
+        if (dataArr == null || dataArr.length === 0) {
+          // 加载结束
+          this.finished = true
+          return
+        }
+        // 数据合并
+        this.riskList = this.riskList.concat(dataArr)
+        console.log(this.riskList)
+        if (this.riskList.length >= this.total) {
+          this.finished = true
+        }
       })
+    },
+    isShowTag (item) {
+      let tagFlag = false
+      let userInfo = JSON.parse(window.localStorage.getItem('userInfo'))
+      let loginUserId = userInfo.user.userId
+      if (item.adminUserId * 1 === loginUserId * 1) {
+        tagFlag = true
+      }
+      return tagFlag
     },
     // 普通用户权限按钮显示
     quanxiankongzhiButton (item) {
       let quanButtonFlag = true
-      let loginUserId = window.localStorage.getItem('loginUserId')
+      let userInfo = JSON.parse(window.localStorage.getItem('userInfo'))
+      let loginUserId = userInfo.user.userId
       if (this.handleStatus === 'true') {
         quanButtonFlag = true 
       } else {
@@ -239,6 +252,7 @@ export default {
   },
   async mounted () {
     await this.getRiskList()
+    this.isShowSwitch = JSON.parse(window.localStorage.getItem('userInfo')).roleList.filter(item => item.roleId * 1 === 10 * 1).length > 0
   }
 }
 </script>

@@ -78,7 +78,7 @@ export default {
             file.message = '上传失败'
           }
         })
-        .catch(() => {
+        .catch((err) => {
           file.status = 'failed'
           file.message = '上传失败'
         })
