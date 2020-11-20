@@ -92,7 +92,7 @@ export default {
       tabList: [],
       buttonList: [],
       current: 1,
-      pageSize: 10,
+      pageSize: 12,
       total: 0,
       // 列表
       list: [],
@@ -124,6 +124,8 @@ export default {
     // 切换处理状态
     async changeHandleStatus (data) {
       this.handleStatus = data
+      this.riskList = []
+      this.current = 1
       await this.getRiskList()
     },
     onLoad() {
@@ -165,7 +167,7 @@ export default {
               this.$router.push({ path: '/dispose1', query: queryParams })
               break
             default:
-              console.log(item.status)
+              console.log('default')
           }
         } else {
           this.$router.push({ path: '/dispose1', query: queryParams })
@@ -194,7 +196,7 @@ export default {
               // 已完成查看
               this.$router.push({ path: '/dispose1', query: queryParams })
             default:
-              console.log(item.status)
+              console.log('default')
           }
         } else {
           this.$router.push({ path: '/dispose1', query: queryParams })
@@ -218,7 +220,6 @@ export default {
         }
         // 数据合并
         this.riskList = this.riskList.concat(dataArr)
-        console.log(this.riskList)
         if (this.riskList.length >= this.total) {
           this.finished = true
         }

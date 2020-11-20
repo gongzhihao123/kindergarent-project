@@ -84,7 +84,9 @@ export default {
               this.$router.replace('/homePage')
             } else {
               this.$toast(res.msg)
-              this.getCodeImgUrl()
+              setTimeout(() => {
+                this.getCodeImgUrl()
+              }, 500)
             }
           })
       }

@@ -75,7 +75,6 @@ export default {
       riskLogAttachment: {
         attachmentList: []
       },
-      fileList: [],
       radio: '1',
       chargePeople: '',
       chargeId: '',
@@ -257,7 +256,7 @@ export default {
                 border: 1PX dashed #ccc;
                 .van-uploader__preview-delete {
                   .van-uploader__preview-delete-icon {
-                    top: -4px;
+                    top: 0px;
                   }
                 }
               }

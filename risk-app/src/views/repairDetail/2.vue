@@ -294,23 +294,6 @@ export default {
         > p {
           // text-align: right;
           padding: 5px;
-          .van-uploader {
-            .van-uploader__wrapper {
-              .van-uploader__preview {
-                margin: 5px 1px;
-                border: 1PX dashed #ccc;
-                .van-uploader__preview-delete {
-                  .van-uploader__preview-delete-icon {
-                    top: -4px;
-                  }
-                }
-              }
-              .van-uploader__upload {
-                margin: 5px 1px;
-                border: 1PX dashed #ccc;
-              }
-            }
-          }
         }
       }
       .confirmbutton {

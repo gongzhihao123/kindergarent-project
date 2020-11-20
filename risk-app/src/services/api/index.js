@@ -23,6 +23,17 @@ export function apiUserInfo (param) {
     .catch((e) => e)
 }
 
+export function apiBack (param) {
+  return request({
+    url: '/bye',
+    method: 'post',
+    data: param,
+    isNeedLogin: true
+  })
+    .then(res => res.data)
+    .catch((e) => e)
+}
+
 // 注册
 export function apiReg (data) {
   return request({

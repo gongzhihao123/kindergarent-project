@@ -7,7 +7,7 @@
         <li class="dispose5TextArea">
           <van-field v-model="remark" rows="3" show-word-limit maxlength="200" autosize type="textarea" placeholder="请补充说明" />
           <p>
-            <van-uploader v-model="fileList" :after-read="afterRead" :before-delete="delUpload" />
+            <van-uploader v-model="temUploadFile" :after-read="afterRead" :before-delete="delUpload" />
           </p>
         </li>
         <!-- <li class="isChangeDeclare">
@@ -81,7 +81,7 @@ export default {
       riskLogAttachment: {
         attachmentList: []
       },
-      fileList: [],
+      temUploadFile: [],
       radio: '1',
       duplicateFlag: false,
       declared: '',
@@ -294,7 +294,7 @@ export default {
                 border: 1PX dashed #ccc;
                 .van-uploader__preview-delete {
                   .van-uploader__preview-delete-icon {
-                    top: -4px;
+                    top: 0px;
                   }
                 }
               }

@@ -59,9 +59,11 @@ export default {
       this.$router.push('/homePage')
     },
     // 切换状态
-    changePicker (val) {
+    async changePicker (val) {
       this.changePickerFlag = val * 1
-      this.getWorkList()
+      this.workList = []
+      this.current = 1
+      await this.getWorkList()
     },
     onLoad() {
       // 异步更新数据
