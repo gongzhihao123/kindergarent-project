@@ -40,13 +40,13 @@
       <van-steps direction="vertical" :active="0">
         <van-step v-for="(item, index) in riskLogList" :key="index">
           <h3>
-            {{ item.riskLog.handlerUserName }}：{{ item.riskLog.createTime | changeDateFormat }} <span v-if="item.riskLog">({{ item.riskLog.intervalTime }})</span>
+            {{ item.handlerUserName }}：{{ item.createdTime | formatReplace }} <span>({{ item.intervalTime }})</span>
           </h3>
           <div class="logContent">
-            <div v-if="item.riskLogImageList" style="display: flex;">
-              <div class="imgBox" v-for=" imgList in item.riskLogImageList " :key="imgList.id">
-                <div v-if="imgList.path" class="imgBoxShow" >
-                  <img :src="'http://123.57.161.229/k-file/' + imgList.path" @click.stop="changeImg(imgList)" alt="">
+            <div v-if="item.attachmentList.length > 0" style="display: flex;">
+              <div class="imgBox" v-for=" imgList in item.attachmentList " :key="imgList.attachmentId">
+                <div v-if="imgList.filepath" class="imgBoxShow" >
+                  <img :src="'http://123.57.161.229/k-file/' + imgList.filepath" @click.stop="changeImg(imgList)" alt="">
                 </div>
                 <van-overlay :show="imgShow" @click="imgShow = false">
                   <div class="wrapper previewImg">
@@ -57,7 +57,7 @@
                 </van-overlay>
               </div>
             </div>
-            <p>{{ item.riskLog.remark }}</p>
+            <p>{{ item.remark }}</p>
           </div>
         </van-step>
       </van-steps>
@@ -107,7 +107,7 @@ export default {
     goBack () {
       this.$router.push('/home')
     },
-    // 上传文件
+     // 上传文件
     afterRead (file) {
       const data = new FormData()
       data.append('file', file.file)
@@ -115,24 +115,34 @@ export default {
       file.message = '上传中...'
       apiUploadFile(data)
         .then(res => {
-          if (res.resultCode === 1) {
+          if (res.code === 200) {
             file.status = 'done'
             file.message = '上传成功'
-            this.riskLogAttachment.attachmentList.push(res.filepath)
+            this.riskLogAttachment.attachmentList.push(res.data)
           } else {
             file.status = 'failed'
             file.message = '上传失败'
           }
         })
+        .catch((err) => {
+          file.status = 'failed'
+          file.message = '上传失败'
+        })
     },
+    // 删除上传文件
     delUpload (file, detail) {
-      let filepath = this.riskLogAttachment.attachmentList[detail.index]
-      apiDelUploadFile({ filepath: filepath }).then(res => {
-        if (res.status === 202) {
-          this.riskLogAttachment.attachmentList.splice(detail.index, 1)
-          this.fileList.splice(detail.index, 1)
-        }
-      })
+      if (file.status === 'done') {
+        let attachmentId = this.riskLogAttachment.attachmentList[detail.index].attachmentId
+        apiDelUploadFile(attachmentId).then(res => {
+          if (res.code === 200) {
+            this.riskLogAttachment.attachmentList.splice(detail.index, 1)
+            this.temUploadFile.splice(detail.index, 1)
+          }
+        })
+      } else {
+        // 只有上传失败的图片的情况下
+        this.temUploadFile.splice(detail.index, 1)
+      }
     },
     // 获取维修人员列表
     getApiRepairUserList () {
@@ -174,8 +184,8 @@ export default {
     chanegTimeStamp (arr1, arr2) {
       if (!arr1) return
       if (!arr2) return
-      let newString1 = arr1[0] + '-' + arr1[1] + '-' + arr1[2] + ' ' + arr1[3] + ':' + arr1[4] + ':' + arr1[5]
-      let newString2 = arr2[0] + '-' + arr2[1] + '-' + arr2[2] + ' ' + arr2[3] + ':' + arr2[4] + ':' + arr2[5]
+      let newString1 = arr1[0].replace('T', ' ')
+      let newString2 = arr2[0].replace('T', ' ')
       let usedTime = new Date(newString2).getTime() - new Date(newString1).getTime()
       let days = Math.floor(usedTime / (24 * 3600 * 1000)); // 计算出天数
       let leavel = usedTime % (24 * 3600 * 1000); // 计算天数后剩余的时间
@@ -211,12 +221,12 @@ export default {
     getTimeLength (data) {
       for (let i = data.length-1; i >= 0; i--) {
         if (i + 1 === data.length) {
-          if (data[i].riskLog !== 'undefined' && data[i].riskLog) {
-            data[i].riskLog.intervalTime = '开始'
+          if (data[i].createdTime) {
+            data[i].intervalTime = '开始'
           }
         } else {
-          if ((data[i].riskLog  !== 'undefined' && data[i].riskLog) && (data[i + 1].riskLog !== 'undefined' && data[i + 1].riskLog)) {
-            data[i].riskLog.intervalTime = '用时：' + this.chanegTimeStamp(data[i+1].riskLog.createTime, data[i].riskLog.createTime)
+          if (data[i].createdTime && data[i + 1].createdTime) {
+            data[i].intervalTime = '用时：' + this.chanegTimeStamp(data[i+1].createdTime, data[i].createdTime)
           }
         }
       }

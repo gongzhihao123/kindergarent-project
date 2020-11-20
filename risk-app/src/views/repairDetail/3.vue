@@ -107,7 +107,7 @@ export default {
     goBack () {
       this.$router.push('/home')
     },
-    // 上传文件
+     // 上传文件
     afterRead (file) {
       const data = new FormData()
       data.append('file', file.file)
@@ -115,24 +115,34 @@ export default {
       file.message = '上传中...'
       apiUploadFile(data)
         .then(res => {
-          if (res.resultCode === 1) {
+          if (res.code === 200) {
             file.status = 'done'
             file.message = '上传成功'
-            this.riskLogAttachment.attachmentList.push(res.filepath)
+            this.riskLogAttachment.attachmentList.push(res.data)
           } else {
             file.status = 'failed'
             file.message = '上传失败'
           }
         })
+        .catch((err) => {
+          file.status = 'failed'
+          file.message = '上传失败'
+        })
     },
+    // 删除上传文件
     delUpload (file, detail) {
-      let filepath = this.riskLogAttachment.attachmentList[detail.index]
-      apiDelUploadFile({ filepath: filepath }).then(res => {
-        if (res.status === 202) {
-          this.riskLogAttachment.attachmentList.splice(detail.index, 1)
-          this.fileList.splice(detail.index, 1)
-        }
-      })
+      if (file.status === 'done') {
+        let attachmentId = this.riskLogAttachment.attachmentList[detail.index].attachmentId
+        apiDelUploadFile(attachmentId).then(res => {
+          if (res.code === 200) {
+            this.riskLogAttachment.attachmentList.splice(detail.index, 1)
+            this.temUploadFile.splice(detail.index, 1)
+          }
+        })
+      } else {
+        // 只有上传失败的图片的情况下
+        this.temUploadFile.splice(detail.index, 1)
+      }
     },
     // 获取维修人员列表
     getApiRepairUserList () {
@@ -282,7 +292,7 @@ export default {
                 border: 1PX dashed #ccc;
                 .van-uploader__preview-delete {
                   .van-uploader__preview-delete-icon {
-                    top: -4px;
+                    top: 0px;
                   }
                 }
               }
