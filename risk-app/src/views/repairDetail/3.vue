@@ -33,8 +33,8 @@
           <van-button type="info" size="small" @click="onConfirm">提交</van-button>
         </li>
       </ul>
-      <div class="logTextContent" v-if="adminDuplicateFlag">
-        已申报，<span>案件名称：<b>{{ adminDuplicateRiskTitle }}</b></span>
+      <div class="logTextContent" v-if="adminDuplicateRiskId">
+        已申报，<span>案件名称：<b @click="goDeclaredDetail">{{ adminDuplicateRiskTitle }}</b></span>
       </div>
       <h2>当前处理人：<span>{{ nowUserName ? nowUserName : '无' }}</span></h2>
       <van-steps direction="vertical" :active="0">
@@ -158,6 +158,10 @@ export default {
     },
     // 处理提交
     onConfirm () {
+      if (!this.remark) {
+        this.$toast('请填写补充说明')
+        return
+      }
       if (!this.duplicateFlag) {
         if (!this.chargeId) {
           this.$toast('请指派负责人')
@@ -186,7 +190,9 @@ export default {
       if (!arr2) return
       let newString1 = arr1.replace('T', ' ')
       let newString2 = arr2.replace('T', ' ')
-      let usedTime = new Date(newString2).getTime() - new Date(newString1).getTime()
+      let androidTime = new Date(newString2).getTime() - new Date(newString1).getTime()
+      let iosTime = Date.parse(newString2.replace(/-/g, "/")) - Date.parse(newString1.replace(/-/g, "/"))
+      let usedTime = androidTime || iosTime
       let days = Math.floor(usedTime / (24 * 3600 * 1000)); // 计算出天数
       let leavel = usedTime % (24 * 3600 * 1000); // 计算天数后剩余的时间
       let hours = Math.floor(leavel / (3600 * 1000)); // 计算剩余的小时数
@@ -230,6 +236,9 @@ export default {
           }
         }
       }
+    },
+    goDeclaredDetail () {
+      this.$router.push({ path: '/declaredDetail', query: { riskId: this.adminDuplicateRiskId, title: this.adminDuplicateRiskTitle, nowUserName: this.nowUserName } })
     }
   },
   async created () {
@@ -238,11 +247,10 @@ export default {
     this.riskId = this.$route.query.riskId
     this.title = this.$route.query.title
     this.nowUserName = this.$route.query.nowUserName
-    if (this.$route.query.duplicateFlag) {
-      this.adminDuplicateFlag = JSON.parse(this.$route.query.duplicateFlag)
+    if (this.$route.query.duplicateRiskId) {
+      this.adminDuplicateRiskId = this.$route.query.duplicateRiskId
+      this.adminDuplicateRiskTitle = this.$route.query.duplicateRiskTitle
     }
-    this.adminDuplicateRiskId = this.$route.query.duplicateRiskId
-    this.adminDuplicateRiskTitle = this.$route.query.duplicateRiskTitle
     this.getApiRepairUserList()
     await apiRiskLogList(this.riskId)
       .then(res => {

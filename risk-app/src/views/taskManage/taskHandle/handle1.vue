@@ -182,7 +182,9 @@ export default {
       if (!arr2) return
       let newString1 = arr1.replace('T', ' ')
       let newString2 = arr2.replace('T', ' ')
-      let usedTime = new Date(newString2).getTime() - new Date(newString1).getTime()
+      let androidTime = new Date(newString2).getTime() - new Date(newString1).getTime()
+      let iosTime = Date.parse(newString2.replace(/-/g, "/")) - Date.parse(newString1.replace(/-/g, "/"))
+      let usedTime = androidTime || iosTime
       let days = Math.floor(usedTime / (24 * 3600 * 1000)); // 计算出天数
       let leavel = usedTime % (24 * 3600 * 1000); // 计算天数后剩余的时间
       let hours = Math.floor(leavel / (3600 * 1000)); // 计算剩余的小时数

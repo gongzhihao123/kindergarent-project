@@ -3,7 +3,7 @@
     <van-nav-bar title="安全隐患列表"  left-arrow @click-left="onClickLeft">
       <template #right>
         <!-- <van-button type="info" size="mini" @click="goRepair">我要添加</van-button> -->
-        <van-button type="info" icon="plus" size="mini" @click="goRepair">添加</van-button>
+        <van-button type="info" icon="plus" size="small" @click="goRepair">添加</van-button>
       </template>
     </van-nav-bar>
     <div class="home-container">
@@ -63,7 +63,7 @@
                   </dd>
                 </dl>
                 <div>
-                  <van-tag type="warning">{{ item.typeLabel }}</van-tag>
+                  <van-tag type="warning" v-if="isShowTag(item)">{{ item.typeLabel }}</van-tag>
                   <van-button :type="quanxiankongzhiButton(item) ? 'info' : 'warning'" size="small" @click="goHandle(item, 2)">{{ quanxiankongzhiButton(item) ? '查看' : '处理' }}</van-button>
                 </div>
               </li>
@@ -114,6 +114,8 @@ export default {
     // 是否本人显示
     changeSwitch (val) {
       this.checked = val
+      this.current = 1
+      this.riskList = []
       if (val) {
         this.switchVal = '负责区域内非本人上报'
       } else {

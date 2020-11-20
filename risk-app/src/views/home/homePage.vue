@@ -11,14 +11,20 @@
           <img src="./../../assets/img/task.png" alt="">
           <p>工作任务管理</p>
         </li>
-        <div>
-          <li @click="goBack">
-            <img src="./../../assets/img/logout.png" alt="">
-            <p>退出系统</p>
-          </li>
-        </div>
-        
       </ul>
+      <div class="homeBack" @click="backShow = true">
+        <img src="./../../assets/img/homeBack.png" alt="">
+      </div>
+      <van-overlay class="homePageOverlay" :show="backShow">
+        <div class="backOverlay">
+          <h1>退出平台</h1>
+          <p>确定要退出平台吗？</p>
+          <div>
+            <van-button size="small" type="info" @click="backShow = false">取消</van-button>
+            <van-button size="small" type="info" @click="goBack">确定</van-button>
+          </div>
+        </div>
+      </van-overlay>
     </section>
   </div>
 </template>
@@ -26,7 +32,9 @@
 import { apiUserInfo, apiBack } from '@/services/api/index'
 export default {
   data () {
-    return {}
+    return {
+      backShow: false
+    }
   },
   methods: {
     getUserInfo () {
@@ -75,6 +83,7 @@ export default {
 .homePage > section > ul {
   width: 100%;
   height: 100%;
+  /* padding: 0 30px; */
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -101,36 +110,50 @@ export default {
   font-size: 14px;
   color: #000;
 }
-
-.homePage ul > div {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  flex-wrap: wrap;
+.homeBack {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
 }
-
-.homePage ul > div > li {
-  width: 110px;
-  height: 110px;
-  margin: 20px 0;
+.homePageOverlay {
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: 1px solid #ccc;
+  z-index: 2000;
 }
 
-.homePage ul > div > li  img {
-  width: 60px;
-  height: 60px;
-  margin: 0 0 10px;
+.backOverlay {
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fff;
+  border-radius: 10px;
 }
 
-.homePage ul > div > li  p {
+.backOverlay > p {
+  margin: 12px 0;
   font-size: 14px;
-  color: #000;
+  color: rgb(197, 197, 186);
+}
+
+.backOverlay > div {
+  width: 100%;
+  margin: 12px 0;
+  display: flex;
+  justify-content: space-around;
+}
+
+.backOverlay > div .van-button {
+  width: 100px;
+  font-size: 14px;
+  border-radius: 16px;
+}
+
+.backOverlay > div .van-button:first-child {
+  background: coral;
+  border: 1px solid coral;
 }
 
 </style>

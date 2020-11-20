@@ -1,11 +1,7 @@
 <template>
-  <!-- 非负责任人提出 -- 园长 -->
   <div class="dispose1">
     <van-nav-bar :title="title" fixed placeholder left-arrow @click-left="goBack"></van-nav-bar>
     <div class="dispose1Content">
-      <div class="logTextContent" v-if="duplicateRiskId">
-        已申报，<span>案件名称：<b @click="goDeclaredDetail">{{ duplicateRiskTitle }}</b></span>
-      </div>
       <h2>当前处理人：<span>{{ nowUserName ? nowUserName : '无' }}</span></h2>
       <van-steps direction="vertical" :active="0">
         <van-step v-for="(item, index) in riskLogList" :key="index">
@@ -114,19 +110,13 @@ export default {
       }
     },
     goDeclaredDetail () {
-      this.$router.push({ path: '/declaredDetail', query: { riskId: this.duplicateRiskId, title: this.duplicateRiskTitle, nowUserName: this.nowUserName } })
+      this.$router.push({ path: '/dispose1', query: { riskId: this.duplicateRiskId } })
     }
   },
   async created () {
-    let type = this.$route.query.type
-    let status = this.$route.query.status
     this.riskId = this.$route.query.riskId
     this.title = this.$route.query.title
     this.nowUserName = this.$route.query.nowUserName
-    if (this.$route.query.duplicateRiskId) {
-      this.duplicateRiskId = this.$route.query.duplicateRiskId
-    }
-    this.duplicateRiskTitle = this.$route.query.duplicateRiskTitle
     await apiRiskLogList(this.riskId)
       .then(res => {
         this.riskLogList = res.data
