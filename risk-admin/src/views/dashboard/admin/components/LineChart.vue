@@ -65,7 +65,7 @@ export default {
       this.chart.setOption({
         xAxis: {
           data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-          boundaryGap: false,
+          boundaryGap: true,
           axisTick: {
             show: false
           }
@@ -79,56 +79,34 @@ export default {
         },
         tooltip: {
           trigger: 'axis',
-          axisPointer: {
-            type: 'cross'
-          },
-          padding: [5, 10]
-        },
-        yAxis: {
-          axisTick: {
-            show: false
+          axisPointer: { // 坐标轴指示器，坐标轴触发有效
+            type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
           }
         },
+        yAxis: [
+          {
+            type: 'value'
+          }
+        ],
         legend: {
-          data: ['expected', 'actual']
+          data: ['邮件营销', '联盟广告']
         },
-        series: [{
-          name: 'expected',
-          itemStyle: {
-            normal: {
-              color: '#FF005A',
-              lineStyle: {
-                color: '#FF005A',
-                width: 2
-              }
-            }
+        series: [
+          {
+            name: '邮件营销',
+            type: 'bar',
+            barWidth: '40%',
+            stack: '广告',
+            data: expectedData
           },
-          smooth: true,
-          type: 'line',
-          data: expectedData,
-          animationDuration: 2800,
-          animationEasing: 'cubicInOut'
-        },
-        {
-          name: 'actual',
-          smooth: true,
-          type: 'line',
-          itemStyle: {
-            normal: {
-              color: '#3888fa',
-              lineStyle: {
-                color: '#3888fa',
-                width: 2
-              },
-              areaStyle: {
-                color: '#f3f8ff'
-              }
-            }
-          },
-          data: actualData,
-          animationDuration: 2800,
-          animationEasing: 'quadraticOut'
-        }]
+          {
+            name: '联盟广告',
+            type: 'bar',
+            stack: '广告',
+            barWidth: '40%',
+            data: actualData
+          }
+        ]
       })
     }
   }
