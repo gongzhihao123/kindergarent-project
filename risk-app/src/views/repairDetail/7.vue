@@ -27,7 +27,7 @@
           <van-button type="info" size="small" @click="onConfirm">提交</van-button>
         </li>
       </ul>
-      <div class="logTextContent" v-if="adminDuplicateRiskId">
+      <div class="logTextContent" v-if="adminDuplicateFlag">
         已申报，<span>案件名称：<b @click="goDeclaredDetail">{{ adminDuplicateRiskTitle }}</b></span>
       </div>
       <h2>当前处理人：<span>{{ nowUserName ? nowUserName : '无' }}</span></h2>
@@ -188,14 +188,18 @@ export default {
     }
   },
   async created () {
-    // let type = this.$route.query.type
     this.repairUserId = this.$route.query.repairUserId
     this.riskId = this.$route.query.riskId
     this.title = this.$route.query.title
     this.nowUserName = this.$route.query.nowUserName
-    if (this.$route.query.duplicateRiskId) {
-     this.adminDuplicateRiskId = this.$route.query.duplicateRiskId
-      this.adminDuplicateRiskTitle = this.$route.query.duplicateRiskTitle
+    if (this.$route.query.duplicateFlag) {
+      this.adminDuplicateFlag = JSON.parse(this.$route.query.duplicateFlag)
+    } else {
+      if (this.$route.query.duplicateRiskId) {
+        this.adminDuplicateFlag = true
+        this.adminDuplicateRiskId = this.$route.query.duplicateRiskId
+        this.adminDuplicateRiskTitle = this.$route.query.duplicateRiskTitle
+      }
     }
     
     this.getHandleIngRiskList()

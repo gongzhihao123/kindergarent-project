@@ -15,10 +15,7 @@
           <van-button type="info" size="small" @click="onConfirm">提交</van-button>
         </li>
       </ul>
-      <div>
-        {{ timeShow }}
-      </div>
-      <div class="logTextContent" v-if="adminDuplicateRiskId">
+      <div class="logTextContent" v-if="adminDuplicateFlag">
         已申报，<span>案件名称：<b @click="goDeclaredDetail">{{ adminDuplicateRiskTitle }}</b></span>
       </div>
       <h2>当前处理人：<span>{{ nowUserName ? nowUserName : '无' }}</span></h2>
@@ -79,8 +76,7 @@ export default {
       declaredPicker: false,
       riskLogList: [],
       imgShow: false,
-      imgUrl: '',
-      timeShow: ''
+      imgUrl: ''
     }
   },
   methods: {
@@ -207,7 +203,6 @@ export default {
       }
     },
     getTimeLength (data) {
-      this.timeShow = data
       for (let i = data.length-1; i >= 0; i--) {
         if (i + 1 === data.length) {
           if (data[i].createdTime) {
@@ -231,10 +226,16 @@ export default {
     this.title = this.$route.query.title
     this.adminUserId = this.$route.query.adminUserId
     this.nowUserName = this.$route.query.nowUserName
-    if (this.$route.query.duplicateRiskId) {
-      this.adminDuplicateRiskId = this.$route.query.duplicateRiskId
-      this.adminDuplicateRiskTitle = this.$route.query.duplicateRiskTitle
+    if (this.$route.query.duplicateFlag) {
+      this.adminDuplicateFlag = JSON.parse(this.$route.query.duplicateFlag)
+    } else {
+      if (this.$route.query.duplicateRiskId) {
+        this.adminDuplicateFlag = true
+        this.adminDuplicateRiskId = this.$route.query.duplicateRiskId
+        this.adminDuplicateRiskTitle = this.$route.query.duplicateRiskTitle
+      }
     }
+    
     await apiRiskLogList(this.riskId)
       .then(res => {
         this.riskLogList = res.data

@@ -59,7 +59,8 @@ module.exports = {
       vuex: 'Vuex',
       'vue-router': 'VueRouter',
       'element-ui': 'ELEMENT', // 需用MINT
-      axios: 'axios'
+      axios: 'axios',
+      'echarts': 'echarts'
     })
     // it can improve the speed of the first screen, it is recommended to turn on preload
     // it can improve the speed of the first screen, it is recommended to turn on preload

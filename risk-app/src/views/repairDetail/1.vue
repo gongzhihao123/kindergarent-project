@@ -3,7 +3,7 @@
   <div class="dispose1">
     <van-nav-bar :title="title" fixed placeholder left-arrow @click-left="goBack"></van-nav-bar>
     <div class="dispose1Content">
-      <div class="logTextContent" v-if="duplicateRiskId">
+      <div class="logTextContent" v-if="duplicateFlag">
         已申报，<span>案件名称：<b @click="goDeclaredDetail">{{ duplicateRiskTitle }}</b></span>
       </div>
       <h2>当前处理人：<span>{{ nowUserName ? nowUserName : '无' }}</span></h2>
@@ -123,8 +123,13 @@ export default {
     this.riskId = this.$route.query.riskId
     this.title = this.$route.query.title
     this.nowUserName = this.$route.query.nowUserName
-    if (this.$route.query.duplicateRiskId) {
-      this.duplicateRiskId = this.$route.query.duplicateRiskId
+    if (this.$route.query.duplicateFlag) {
+      this.duplicateFlag = JSON.parse(this.$route.query.duplicateFlag)
+    } else {
+      if (this.$route.query.duplicateRiskId) {
+        this.duplicateFlag = true
+        this.duplicateRiskId = this.$route.query.duplicateRiskId
+      }
     }
     this.duplicateRiskTitle = this.$route.query.duplicateRiskTitle
     await apiRiskLogList(this.riskId)
