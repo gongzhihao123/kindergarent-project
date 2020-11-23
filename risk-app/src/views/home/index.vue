@@ -39,7 +39,7 @@
                 </dl>
                 <div>
                   <van-tag v-if="isShowTag(item)" type="warning">{{ item.typeLabel }}</van-tag>
-                  <van-button :type="quanxiankongzhiButton(item) ? 'info' : 'warning'" size="small" @click="goHandle(item, 2)">{{ quanxiankongzhiButton(item) ? '查看' : '处理' }}</van-button>
+                  <van-button :type="quanxiankongzhiButton(item) ? 'info' : 'warning'" size="small" @click="goHandle(item, 1)">{{ quanxiankongzhiButton(item) ? '查看' : '处理' }}</van-button>
                 </div>
               </li>
             </ul>
@@ -166,7 +166,7 @@ export default {
               break
             case 4:
               // 已完成查看
-              this.$router.push({ path: '/dispose1', query: queryParams })
+              this.$router.push({ path: '/dispose1', query: Object.assign({ isFinishIndex: index }, queryParams) })
               break
             default:
               console.log('default')
@@ -196,7 +196,7 @@ export default {
               break
             case 4:
               // 已完成查看
-              this.$router.push({ path: '/dispose1', query: queryParams })
+              this.$router.push({ path: '/dispose1', query: Object.assign({ isFinishIndex: index  }, queryParams) })
             default:
               console.log('default')
           }

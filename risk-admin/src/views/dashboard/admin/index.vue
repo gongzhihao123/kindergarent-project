@@ -244,6 +244,7 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
+        font-size: 28px;
         border-radius: 50%;
         border: 1px solid #ccc;
       }

@@ -36,10 +36,11 @@ const routes = [
     ]
   },
   {
-    path: '/dispose',
-    name: 'dispose',
+    path: '/disposes',
+    name: 'disposes',
     component: index,
     children: [
+      { path: '/dispose', name: 'dispose', component: () => import('./../views/repairDetail/dispose.vue') },
       { path: '/dispose1', name: 'dispose1', component: () => import('./../views/repairDetail/1.vue') },
       { path: '/dispose2', name: 'dispose2', component: () => import('./../views/repairDetail/2.vue') },
       { path: '/dispose3', name: 'dispose3', component: () => import('./../views/repairDetail/3.vue') },

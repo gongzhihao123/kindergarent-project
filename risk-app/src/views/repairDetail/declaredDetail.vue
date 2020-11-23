@@ -110,7 +110,7 @@ export default {
       }
     },
     goDeclaredDetail () {
-      this.$router.push({ path: '/dispose1', query: { riskId: this.duplicateRiskId } })
+      this.$router.push({ path: '/dispose', query: { riskId: this.duplicateRiskId } })
     }
   },
   async created () {
