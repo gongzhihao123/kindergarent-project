@@ -1,14 +1,14 @@
 <template>
   <div class="dict">
     <!-- <div class="dict-head">
-      <el-button size="small" type="primary" icon="el-icon-plus">添加</el-button>
+      <el-button size="mini" type="primary" icon="el-icon-plus">添加</el-button>
       <div class="dict-handle">
         <el-input
           placeholder="请输入内容"
           v-model="input"
           clearable>
         </el-input>
-        <el-button size="small" type="primary" icon="el-icon-search">
+        <el-button size="mini" type="primary" icon="el-icon-search">
           搜索
         </el-button>
       </div>
@@ -16,15 +16,15 @@
     <div class="dict-content">
       <div class="dictTable1 el-col el-col-22 el-col-xs-22 el-col-sm-22 el-col-md-9 el-col-lg-9 el-col-xl-9">
         <div class="dict-head">
-          <el-button size="small" type="primary" icon="el-icon-plus" @click="addDict">添加</el-button>
+          <el-button size="mini" type="primary" icon="el-icon-plus" @click="addDict">添加</el-button>
           <div class="dict-handle">
             <el-input
               placeholder="请输入内容"
-              size="small"
+              size="mini"
               v-model="input"
               clearable>
             </el-input>
-            <el-button size="small" type="primary" icon="el-icon-search">
+            <el-button size="mini" type="primary" icon="el-icon-search">
               搜索
             </el-button>
           </div>
@@ -46,8 +46,8 @@
             label="操作"
             width="160">
             <template slot-scope="scope">
-              <el-button size="small" @click.native.stop="edit(scope.row)" type="primary">编辑</el-button>
-              <el-button size="small" @click.native.stop="delDict(scope.row)"  type="danger">删除</el-button>
+              <el-button size="mini" @click.native.stop="edit(scope.row)" type="primary">编辑</el-button>
+              <el-button size="mini" @click.native.stop="delDict(scope.row)"  type="danger">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -63,7 +63,7 @@
       <div class="dictTable2 el-col el-col-24 el-col-xs-24 el-col-sm-24 el-col-md-14 el-col-lg-13 el-col-xl-13">
         <div class="dict-head">
           <div class="dict-handle">字典详情<span v-show="this.dictName"> / {{this.dictName}}</span></div>
-          <el-button size="small" type="primary" icon="el-icon-plus" @click="addDictDetail">添加</el-button>
+          <el-button size="mini" type="primary" icon="el-icon-plus" @click="addDictDetail">添加</el-button>
         </div>
         <el-table
           :data="dictDetail"
@@ -87,8 +87,8 @@
             label="操作"
             width="160">
             <template slot-scope="scope">
-              <el-button size="small" @click.native.stop="editDictDetail(scope.row)" type="primary">编辑</el-button>
-              <el-button size="small" @click.native.stop="delDictDetail(scope.row)"  type="danger">删除</el-button>
+              <el-button size="mini" @click.native.stop="editDictDetail(scope.row)" type="primary">编辑</el-button>
+              <el-button size="mini" @click.native.stop="delDictDetail(scope.row)"  type="danger">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -362,13 +362,13 @@ export default {
   }
   .dict-content {
     .dictTable1 {
-      margin: 10px 5px;
+      margin: 4px;
       padding: 10px;
       border: 1px solid #e6ebf5;
       box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
     }
     .dictTable2 {
-      margin: 10px 5px;
+      margin: 4px;
       padding: 10px;
       border: 1px solid #e6ebf5;
       box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);

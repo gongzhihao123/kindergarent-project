@@ -2,23 +2,10 @@
 <template>
   <div class="user">
     <div class="user-container">
-      <!-- 搜索表头 -->
-      <el-row>
-        <el-col>
-          <el-button type="primary" icon="el-icon-plus" size="mini" @click="addUser">添加用户</el-button>
-          <!-- <el-select size="small" v-model="onLineUser" clearable placeholder="请选择">
-            <el-option
-              v-for="item in onLineUserList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select> -->
-        </el-col>
-      </el-row>
   <!-- 表格主体 -->
       <div class="content">
         <div class="table1 el-col el-col-22 el-col-xs-22 el-col-sm-22 el-col-md-13 el-col-lg-13 el-col-xl-16">
+          <el-button type="primary" icon="el-icon-plus" size="mini" @click="addUser">添加</el-button>
           <el-table
             :data="tableData"
             @row-click="clickUser"
@@ -56,7 +43,7 @@
         </div>
         <div class="userPermissBox el-col el-col-24 el-col-xs-24 el-col-sm-24 el-col-md-7 el-col-lg-7 el-col-xl-6">
           <div class="userPermissBox-header">
-            <span>权限设置</span>
+            <span>角色设置</span>
             <div></div>
           </div>
           <el-checkbox-group v-model="checkUserRoleList" >
@@ -372,7 +359,7 @@ export default {
 <style lang="scss">
 .user {
   .user-container {
-    padding: 12px;
+    padding: 14px;
     background: #fff;
     .el-row {
       .el-col {
@@ -381,7 +368,6 @@ export default {
       }
     }
     .content {
-      margin: 20px 0;
       .el-table {
         overflow: auto;
         .el-table__header {
@@ -408,6 +394,9 @@ export default {
       }
       .table1 {
         margin-right: 7.5px;
+        > .el-button {
+          margin: 10px;
+        }
       }
       .userPermissBox {
         margin-left: 7.5px;

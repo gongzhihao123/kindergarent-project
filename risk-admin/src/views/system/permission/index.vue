@@ -4,7 +4,7 @@
       <!-- 搜索表头 -->
       <el-row>
         <el-col>
-          <el-button type="primary" icon="el-icon-plus" size="mini" @click="addPermission">添加权限</el-button>
+          <el-button type="primary" icon="el-icon-plus" size="mini" @click="addPermission">添加</el-button>
         </el-col>
       </el-row>
   <!-- 表格主体 -->
@@ -177,7 +177,7 @@ export default {
 <style lang="scss">
 .permission {
   .permission-container {
-    padding: 12px;
+    padding: 24px;
     background: #fff;
     .el-row {
       .el-col {

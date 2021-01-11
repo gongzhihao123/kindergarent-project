@@ -18,7 +18,7 @@
 
   <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
     <div class="dashboard-chart-screen">
-      <el-radio-group v-model="radioStatus">
+      <el-radio-group v-model="radioStatus" size="mini">
         <el-radio-button label="1">按时间</el-radio-button>
         <el-radio-button label="2">按区域</el-radio-button>
         <el-radio-button label="3">按提出人</el-radio-button>
@@ -41,7 +41,7 @@
     <div class="dashboard-table-screen">
       <dl>
         <dt>提出人</dt>
-        <el-select v-model="value" placeholder="请选择">
+        <el-select v-model="value" placeholder="请选择" size="mini">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -52,7 +52,7 @@
       </dl>
       <dl>
         <dt>所属区域</dt>
-        <el-select v-model="value" placeholder="请选择">
+        <el-select v-model="value" placeholder="请选择" size="mini">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -65,6 +65,7 @@
         <dt>创建时间</dt>
         <el-date-picker
           v-model="value2"
+          size="mini"
           type="datetimerange"
           :picker-options="pickerOptions"
           range-separator="至"
@@ -73,7 +74,7 @@
           align="right">
         </el-date-picker>
       </dl>
-      <el-button type="primary">搜索</el-button>
+      <el-button type="primary" size="mini">搜索</el-button>
     </div>
     <el-table
       :data="tableData"
@@ -107,7 +108,7 @@
         label="操作"
         width="100">
         <template slot-scope="scope">
-          <el-button @click="handleClick(scope.row)" type="primary" size="small">查看详情</el-button>
+          <el-button @click="handleClick(scope.row)" type="primary" size="mini">查看详情</el-button>
         </template>
       </el-table-column>
     </el-table>

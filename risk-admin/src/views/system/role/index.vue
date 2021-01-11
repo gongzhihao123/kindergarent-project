@@ -1,15 +1,10 @@
 <template>
   <div class="role">
     <div class="role-container">
-      <!-- 搜索表头 -->
-      <el-row>
-        <el-col>
-          <el-button type="primary" icon="el-icon-plus" size="mini" @click="addRole">添加角色</el-button>
-        </el-col>
-      </el-row>
   <!-- 表格主体 -->
       <div class="content">
         <div class="table1 el-col el-col-24 el-col-xs-24 el-col-sm-24 el-col-md-16 el-col-lg-16 el-col-xl-17">
+          <el-button type="primary" icon="el-icon-plus" size="mini" @click="addRole">添加</el-button>
           <el-table
             :data="tableData"
             @row-click="clickRole"
@@ -210,7 +205,7 @@ export default {
 <style lang="scss">
 .role {
   .role-container {
-    padding: 12px;
+    padding: 14px;
     background: #fff;
     .el-row {
       .el-col {
@@ -219,7 +214,7 @@ export default {
       }
     }
     .content {
-      margin: 20px 0;
+      // margin: 20px 0;
       .el-table {
         overflow: auto;
         .el-table__header {
@@ -247,6 +242,9 @@ export default {
       }
       .table1 {
         margin-right: 7.5px;
+        > .el-button {
+          margin: 10px;
+        }
       }
       .rolePermissBox {
         margin-left: 7.5px;

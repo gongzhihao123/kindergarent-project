@@ -2,12 +2,12 @@
   <div class="procedureManage">
     <!-- 处理按钮 -->
     <div class="handle">
-      <el-radio-group v-model="taskStatus" @change="chnageStatus">
+      <el-radio-group v-model="taskStatus" @change="chnageStatus" size="mini">
         <el-radio-button label="1">待处理</el-radio-button>
         <el-radio-button label="2">处理中</el-radio-button>
         <el-radio-button label="3">已完成</el-radio-button>
       </el-radio-group>
-      <el-button type="primary" @click="addProcess">添加任务</el-button>
+      <el-button type="primary" size="mini" @click="addProcess">添加任务</el-button>
     </div>
     <div class="procedure-main">
       <!-- 表格主体 -->
@@ -40,14 +40,14 @@
               <template slot-scope="scope">
                 <!-- <el-button @click="handleClick(scope.row)" type="primary" >查看</el-button> -->
                 <el-button
-                  size="small"
+                  size="mini"
                   v-if="taskStatus * 1 === 1"
                   type="primary"
                   @click="goProceHandle(scope.row, 1)"
                   >去处理</el-button
                 >
                 <el-button
-                  size="small"
+                  size="mini"
                   v-else
                   type="success"
                   @click="goProceHandle(scope.row, 2)"
@@ -102,7 +102,7 @@
               :limit="3"
               :file-list="fileList"
             >
-              <el-button size="small" type="primary">点击上传</el-button>
+              <el-button size="mini" type="primary">点击上传</el-button>
             </el-upload>
           </dd>
           <!-- {{this.imageUrl}} -->
@@ -113,7 +113,7 @@
             <el-select
               v-model="workLogNewDTO.toUserId"
               clearable
-              size="small"
+              size="mini"
               @change="userChange"
               placeholder="请选择"
             >
@@ -277,7 +277,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .procedureManage {
-  padding:20px;
+  padding: 12px;
   .handle {
     display: flex;
     justify-content: space-between;
