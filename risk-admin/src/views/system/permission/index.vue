@@ -1,14 +1,9 @@
 <template>
   <div class="permission">
     <div class="permission-container">
-      <!-- 搜索表头 -->
-      <el-row>
-        <el-col>
-          <el-button type="primary" icon="el-icon-plus" size="mini" @click="addPermission">添加</el-button>
-        </el-col>
-      </el-row>
   <!-- 表格主体 -->
-      <div class="content">
+      <div class="content el-col el-col-24 el-col-xs-24 el-col-sm-24 el-col-md-22 el-col-lg-22 el-col-xl-22">
+        <el-button type="primary" icon="el-icon-plus" size="mini" @click="addPermission">添加</el-button>
         <el-table
           :data="tableData"
           style="width: 100%; margin-top: 20px">
@@ -32,15 +27,15 @@
             </template>
           </el-table-column>
         </el-table>
+        <el-pagination
+          v-if="total"
+          @current-change="handleCurrentChange"
+          :current-page="current"
+          :page-size="pageSize"
+          layout="total, prev, pager, next, jumper"
+          :total="total">
+        </el-pagination>
       </div>
-      <el-pagination
-        v-if="total"
-        @current-change="handleCurrentChange"
-        :current-page="current"
-        :page-size="pageSize"
-        layout="total, prev, pager, next, jumper"
-        :total="total">
-      </el-pagination>
       <el-dialog
         :title="isAdd ? '添加权限' : '编辑权限'"
         :visible.sync="permissionDialog"
@@ -177,7 +172,7 @@ export default {
 <style lang="scss">
 .permission {
   .permission-container {
-    padding: 24px;
+    padding: 14px;
     background: #fff;
     .el-row {
       .el-col {
@@ -186,7 +181,12 @@ export default {
       }
     }
     .content {
-      margin: 20px 0;
+      margin: 0 auto;
+      border: 1px solid #e6ebf5;
+      box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+      > .el-button {
+        margin: 10px;
+      }
       .el-table {
         overflow: auto;
         .el-table__header {
@@ -206,6 +206,7 @@ export default {
       }
     }
     .el-pagination {
+      margin: 20px 0;
       text-align: center;
     }
   }

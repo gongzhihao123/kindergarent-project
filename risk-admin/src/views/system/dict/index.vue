@@ -377,7 +377,7 @@ export default {
       .el-table__body {}
     }
     .el-pagination {
-      margin-top: 10px;
+      margin: 20px 0;
       text-align: center;
     }
   }
