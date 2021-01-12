@@ -3,10 +3,7 @@ const taskManageRoutes =
   {
     path: '/taskManage',
     component: Home,
-    name: 'taskManage',
     meta: {
-      title: '任务管理',
-      icon: '404',
       roles: ['admin']
     },
     children: [
@@ -14,7 +11,7 @@ const taskManageRoutes =
         path: 'index',
         component: () => import('@/views/taskManage/index'),
         name: 'index',
-        meta: { title: '任务管理', noCache: true }
+        meta: { title: '任务管理', icon: 'riskset', noCache: true }
       },
       {
         path: 'proceHandle',
