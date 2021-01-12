@@ -20,6 +20,17 @@
         />
         <van-pagination v-if="areaTotal" v-model="current" force-ellipses :total-items="areaTotal" :show-page-size="3" />
       </van-popup>
+      <van-field class="beLongArea" label="隐患等级" v-model="level" placeholder="点击选择" @click="levelPicker = true" readonly />
+        <van-popup v-model="levelPicker" position="bottom">
+          <van-picker
+            show-toolbar
+            value-key="label"
+            :columns="levelList"
+            @confirm="levelConfirm"
+            @cancel="levelPicker = false"
+          />
+        <!-- <van-pagination v-if="levelTotal" v-model="current" force-ellipses :total-items="areaTotal" :show-page-size="3" /> -->
+      </van-popup>
     </van-cell-group>
     <div class="repairFood">
       <van-button plain type="info" size="small" @click="$router.push('/home')">取消</van-button>
@@ -28,7 +39,7 @@
   </div>
 </template>
 <script>
-import { apiAreaList, apiUploadFile, apiAddRisk, apiDelUploadFile } from '@/services/api/index'
+import { apiAreaList, apiUploadFile, apiAddRisk, apiDelUploadFile, apiDictDetail } from '@/services/api/index'
 export default {
   data () {
     return {
@@ -50,7 +61,11 @@ export default {
       areaAdminUserList: [],
       adminUserId: '',
       adminUserName: '',
-      areaPicker: false
+      areaPicker: false,
+      levelPicker: false,
+      level: '',
+      levelId: '',
+      levelList: [],
     }
   },
   methods: {
@@ -111,6 +126,12 @@ export default {
       this.areaPicker = false
       
     },
+    // 隐患等级确认
+    levelConfirm (val) {
+      this.levelId = val.value
+      this.level = val.label
+      this.levelPicker = false
+    },
     // 验证
     checkFrom () {
       let titleTest = /^[\s\S]{6,12}$/
@@ -126,6 +147,10 @@ export default {
         this.$toast('描述不能为空')
         return false
       }
+      if (!this.levelId) {
+        this.$toast('请选择隐患等级')
+        return false
+      }
       if (!this.area) {
         this.$toast('请选择区域')
         return false
@@ -139,6 +164,7 @@ export default {
           adminUserId: this.adminUserId,
           adminUserName: this.adminUserName,
           areaId: this.areaId,
+          level: this.levelId,
           riskLog: this.riskLog,
           title: this.title
         })
@@ -148,6 +174,12 @@ export default {
             }
           })
       }
+    },
+    // 获取字典详情列表（隐患等级）
+    getLevel () {
+      apiDictDetail({dictName: 'risk_level'}).then(res => {
+        this.levelList = res.data.risk_level.dictDetailList
+      })
     },
     // 获取区域列表
     getAreaList () {
@@ -159,6 +191,7 @@ export default {
   },
   mounted () {
     this.getAreaList()
+    this.getLevel()
   }
 }
 </script>

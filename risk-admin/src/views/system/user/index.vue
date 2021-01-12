@@ -84,7 +84,7 @@
                       <img
                         v-if="file.filepath"
                         class="el-upload-list__item-thumbnail"
-                        :src="'http://123.57.161.229/k-file/' + file.filepath" alt=""
+                        :src="'http://123.57.161.229/zhenyou-file/' + file.filepath" alt=""
                       >
                       <span class="el-upload-list__item-actions">
                         <span
@@ -176,7 +176,7 @@ export default {
   computed: {
     uploadPath () {
       // const routePath = '/activity'
-      return window.location.origin + '/kindergarten/manage/userAccount/attachment'
+      return window.location.origin + '/kzhenyouapi/manage/userAccount/attachment'
     }
   },
   methods: {

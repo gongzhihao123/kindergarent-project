@@ -101,6 +101,13 @@ export function apiRiskPage (data) {
     .catch((e) => e)
 }
 
+// 安全隐患列表---隐患等级列表
+export function apiDictDetail (data) {
+  return request.get('/common/dictDetail', { params: data })
+    .then(res => res.data)
+    .catch((e) => e)
+}
+
 // 安全隐患列表---区域管理员
 export function apiRiskList (data) {
   return request.get('/riskLog/risk/list')

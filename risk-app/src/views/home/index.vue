@@ -33,7 +33,7 @@
                 <dl>
                   <dt>{{ index + 1 }}</dt>
                   <dd>
-                    <p>{{ item.title }}</p>
+                    <p>{{ item.title }} <van-tag type="success">{{ item.levelLabel }}</van-tag></p>
                     <span v-if="item.nowUserName">处理人：{{item.nowUserName}}</span>
                   </dd>
                 </dl>

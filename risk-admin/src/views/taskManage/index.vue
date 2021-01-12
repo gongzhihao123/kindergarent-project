@@ -174,7 +174,7 @@ export default {
   },
   computed: {
     uploadPath () {
-      return window.location.origin + '/kindergarten/workLogAttachment/attachment'
+      return window.location.origin + '/kzhenyouapi/workLogAttachment/attachment'
     }
   },
   methods: {

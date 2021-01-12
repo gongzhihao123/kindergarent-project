@@ -16,7 +16,7 @@
             <div v-if="item.attachmentList.length > 0" style="display: flex; flex-wrap: wrap;">
               <div class="imgBox" v-for=" imgList in item.attachmentList " :key="imgList.attachmentId">
                 <div v-if="imgList.filepath" class="imgBoxShow" >
-                  <img :src="'http://123.57.161.229/k-file/' + imgList.filepath" @click.stop="changeImg(imgList)" alt="" />
+                  <img :src="'http://123.57.161.229/zhenyou-file/' + imgList.filepath" @click.stop="changeImg(imgList)" alt="" />
                 </div>
               </div>
               <van-overlay :show="imgShow" @click="imgShow = false">
@@ -54,7 +54,7 @@ export default {
     // 预览img
     changeImg (item) {
       this.imgUrl = ''
-      this.imgUrl = 'http://123.57.161.229/k-file/' + item.filepath
+      this.imgUrl = 'http://123.57.161.229/zhenyou-file/' + item.filepath
       this.imgShow = true
     },
     // 返回上一页

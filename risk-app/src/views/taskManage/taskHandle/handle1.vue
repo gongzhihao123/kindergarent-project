@@ -161,7 +161,7 @@ export default {
     // 下载上传的附件
     downUploadFile (data) {
 	    window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '')
-      var url = 'http://123.57.161.229/k-file/' + data.filepath
+      var url = 'http://123.57.161.229/zhenyou-file/' + data.filepath
       window.location.href = url
     },
     getUserList () {

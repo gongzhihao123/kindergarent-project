@@ -114,7 +114,7 @@ export default {
   },
   computed: {
     uploadPath () {
-      return window.location.origin + '/kindergarten/workLogAttachment/attachment'
+      return window.location.origin + '/kzhenyouapi/workLogAttachment/attachment'
     }
   },
   methods: {
@@ -137,7 +137,7 @@ export default {
     downUploadFile (data) {
       // let token = window.localStorage.getItem('accessToken')
       // let HTP = window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '')
-      var url = 'http://123.57.161.229/k-file/' + data.filepath
+      var url = 'http://123.57.161.229/zhenyou-file/' + data.filepath
       // window.location.href = url
       var xhr = new XMLHttpRequest()
       // GET请求,请求路径url,async(是否异步)
