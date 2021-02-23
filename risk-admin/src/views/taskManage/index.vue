@@ -286,6 +286,10 @@ export default {
   .procedure-main {
     margin-top: 20px;
   }
+  .el-pagination {
+    margin: 10px 0;
+    text-align: center;
+  }
   .el-dialog {
     .el-dialog__body {
       dl {

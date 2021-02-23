@@ -81,7 +81,7 @@
           <template slot-scope="scope">
             <div v-if="scope.row.workLogAttachmentList.length > 0" >
               <div v-for="(imgList, index) in scope.row.workLogAttachmentList" :key="index" @click="downUploadFile(imgList)">
-                <span>{{ imgList.filename }}</span>
+                <span class="uploadFile">{{ imgList.filename }}</span>
               </div>
             </div>
             <div v-else>暂无</div>
@@ -135,9 +135,9 @@ export default {
     },
     // 下载附件
     downUploadFile (data) {
-      // let token = window.localStorage.getItem('accessToken')
-      // let HTP = window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '')
-      var url = 'http://123.57.161.229/zhenyou-file/' + data.filepath
+      let HTP = window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '')
+      var url = HTP + '/k-file/' + data.filepath
+      // var url = 'http://123.57.161.229/k-file/' + data.filepath
       // window.location.href = url
       var xhr = new XMLHttpRequest()
       // GET请求,请求路径url,async(是否异步)
@@ -289,6 +289,10 @@ export default {
       margin: 10px 0;
       font-size: 16px;
       font-weight: 400;
+    }
+    .uploadFile:hover {
+      color: cornflowerblue;
+      cursor: pointer;
     }
   }
 }

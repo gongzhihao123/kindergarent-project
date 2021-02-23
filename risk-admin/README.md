@@ -1,4 +1,4 @@
-# ft-health
+# kindergarten
 
 ## Project setup
 ```

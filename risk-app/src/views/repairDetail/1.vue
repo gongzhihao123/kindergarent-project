@@ -17,7 +17,7 @@
             <div v-if="item.attachmentList.length > 0" style="display: flex; flex-wrap: wrap;">
               <div class="imgBox" v-for=" imgList in item.attachmentList " :key="imgList.attachmentId">
                 <div v-if="imgList.filepath" class="imgBoxShow" >
-                  <img :src="'http://123.57.161.229/zhenyou-file/' + imgList.filepath" @click.stop="changeImg(imgList)" alt="" />
+                  <img :src="'http://123.57.161.229/k-file/' + imgList.filepath" @click.stop="changeImg(imgList)" alt="" />
                 </div>
               </div>
               <van-overlay :show="imgShow" @click="imgShow = false">
@@ -36,7 +36,7 @@
   </div>
 </template>
 <script>
-import { chargePersonConfirm, apiUploadFile, apiDelUploadFile, directorConfirm, directorHandle, apiRiskLogList } from '@/services/api/index'
+import { apiRiskLogList } from '@/services/api/index'
 export default {
   data () {
     return {
@@ -56,7 +56,7 @@ export default {
     // 预览img
     changeImg (item) {
       this.imgUrl = ''
-      this.imgUrl = 'http://123.57.161.229/zhenyou-file/' + item.filepath
+      this.imgUrl = 'http://123.57.161.229/k-file/' + item.filepath
       this.imgShow = true
     },
     // 返回上一页
@@ -120,8 +120,6 @@ export default {
     }
   },
   async created () {
-    let type = this.$route.query.type
-    let status = this.$route.query.status
     this.riskId = this.$route.query.riskId
     this.title = this.$route.query.title
     this.nowUserName = this.$route.query.nowUserName

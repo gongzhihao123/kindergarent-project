@@ -53,7 +53,7 @@ module.exports = {
     })
   },
   devServer: {
-    host: '0.0.0.0',
+    host: '58.133.87.122',
     port: 8088, // 端口号
     https: false, // https:{type:Boolean}
     open: false, // 配置自动启动浏览器  open: 'Google Chrome'-默认启动谷歌
