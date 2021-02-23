@@ -53,13 +53,13 @@ module.exports = {
     })
   },
   devServer: {
-    host: '58.133.87.190',
+    host: '0.0.0.0',
     port: 8088, // 端口号
     https: false, // https:{type:Boolean}
     open: false, // 配置自动启动浏览器  open: 'Google Chrome'-默认启动谷歌
     // 配置多个代理
     proxy: {
-      '/kzhenyouapi': {
+      '/kindergartenapi': {
         // target: 'http://58.133.87.118:18080',
         target: 'http://123.57.161.229',
         ws: true, // 代理的WebSockets

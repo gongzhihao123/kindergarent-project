@@ -19,7 +19,7 @@ module.exports = {
     /* 自动打开浏览器 */
     open: true,
     /* 设置为0.0.0.0则所有的地址均能访问 */
-    host: '58.133.87.190',
+    host: '0.0.0.0',
     port: 8080,
     https: false,
     hotOnly: false,
@@ -33,7 +33,7 @@ module.exports = {
       // http://58.133.87.190:8080/captcha
       // http://123.57.161.229/kindergarten/manage/dict/page/1/10
       // '/kindergarten': {
-      '/kzhenyouapi': {
+      '/kindergartenapi': {
         /* 目标代理服务器地址 */
         target: 'http://123.57.161.229',
         // target: 'http://58.133.87.118:18080',

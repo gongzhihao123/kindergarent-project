@@ -174,7 +174,8 @@ export default {
   },
   computed: {
     uploadPath () {
-      return window.location.origin + '/kzhenyouapi/workLogAttachment/attachment'
+      console.log('/kindergartenapi')
+      return window.location.origin + process.env.VUE_APP_BASE_API + '/workLogAttachment/attachment'
     }
   },
   methods: {

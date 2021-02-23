@@ -176,7 +176,7 @@ export default {
   computed: {
     uploadPath () {
       // const routePath = '/activity'
-      return window.location.origin + '/kzhenyouapi/manage/userAccount/attachment'
+      return window.location.origin + process.env.VUE_APP_BASE_API + '/manage/userAccount/attachment'
     }
   },
   methods: {

@@ -114,7 +114,7 @@ export default {
   },
   computed: {
     uploadPath () {
-      return window.location.origin + '/kzhenyouapi/workLogAttachment/attachment'
+      return window.location.origin + process.env.VUE_APP_BASE_API + '/workLogAttachment/attachment'
     }
   },
   methods: {
