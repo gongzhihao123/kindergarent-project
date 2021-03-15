@@ -24,7 +24,7 @@
         <van-popup v-model="levelPicker" position="bottom">
           <van-picker
             show-toolbar
-            value-key="label"
+            value-key="name"
             :columns="levelList"
             @confirm="levelConfirm"
             @cancel="levelPicker = false"
@@ -39,7 +39,7 @@
   </div>
 </template>
 <script>
-import { apiAreaList, apiUploadFile, apiAddRisk, apiDelUploadFile, apiDictDetail } from '@/services/api/index'
+import { apiAreaList, apiRiskLevelList, apiUploadFile, apiAddRisk, apiDelUploadFile, apiDictDetail } from '@/services/api/index'
 export default {
   data () {
     return {
@@ -128,8 +128,8 @@ export default {
     },
     // 隐患等级确认
     levelConfirm (val) {
-      this.levelId = val.value
-      this.level = val.label
+      this.levelId = val.riskLevelId
+      this.level = val.name
       this.levelPicker = false
     },
     // 验证
@@ -164,7 +164,7 @@ export default {
           adminUserId: this.adminUserId,
           adminUserName: this.adminUserName,
           areaId: this.areaId,
-          level: this.levelId,
+          levelId: this.levelId,
           riskLog: this.riskLog,
           title: this.title
         })
@@ -177,8 +177,8 @@ export default {
     },
     // 获取字典详情列表（隐患等级）
     getLevel () {
-      apiDictDetail({dictName: 'risk_level'}).then(res => {
-        this.levelList = res.data.risk_level.dictDetailList
+      apiRiskLevelList().then(res => {
+        this.levelList = res.data
       })
     },
     // 获取区域列表

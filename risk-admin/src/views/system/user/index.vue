@@ -119,9 +119,7 @@ export default {
       onLineUserList: [],
       onLineUser: '',
       // 主体
-      tableData: [
-        { id: 1, name: 'asd' }
-      ],
+      tableData: [],
       // 分页
       current: 1,
       pageSize: 8,
@@ -269,7 +267,14 @@ export default {
     },
     addUserDialogClose () {
       this.addUserDialog = false
-      this.addRuleForm = {}
+      this.addRuleForm = {
+        account: '',
+        user: {
+          headimg: '',
+          nickname: ''
+        },
+        userId: ''
+      }
     },
     // 删除用户
     delUser (val) {

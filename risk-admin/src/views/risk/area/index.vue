@@ -4,7 +4,7 @@
       <!-- 搜索表头 -->
       <el-row>
         <el-col>
-          <el-button type="primary" icon="el-icon-plus" size="mini" @click="add">添加区域</el-button>
+          <el-button type="primary" icon="el-icon-plus" size="mini" @click="add">添 加</el-button>
           <div>
             <el-input
               placeholder="请输入内容"

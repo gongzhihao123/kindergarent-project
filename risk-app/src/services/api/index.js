@@ -115,6 +115,13 @@ export function apiRiskList (data) {
     .catch((e) => e)
 }
 
+// 安全隐患等级列表
+export function apiRiskLevelList (data) {
+  return request.get('/riskLevel/list')
+    .then(res => res.data)
+    .catch((e) => e)
+}
+
 // 维修人员列表
 export function apiRepairUserList (data) {
   return request.get('/riskLog/repairUserList', { params: data })

@@ -40,3 +40,45 @@ export function regionUserList () {
     method: 'get'
   })
 }
+
+// 获取任务等级列表
+export function riskLevelList (data) {
+  return request({
+    url: '/riskLevel/list',
+    method: 'get'
+  })
+}
+
+// 获取主任列表
+export function riskLevelManageList (data) {
+  return request({
+    url: '/riskLevel/manager/list',
+    method: 'get'
+  })
+}
+
+// 添加任务等级
+export function addRiskLevel (data) {
+  return request({
+    url: '/riskLevel',
+    method: 'post',
+    data
+  })
+}
+
+// 编辑任务等级
+export function editRiskLevel (data) {
+  return request({
+    url: '/riskLevel',
+    method: 'put',
+    data
+  })
+}
+
+// 删除区域
+export function delRiskLevel (data) {
+  return request({
+    url: '/riskLevel/' + data,
+    method: 'delete'
+  })
+}
