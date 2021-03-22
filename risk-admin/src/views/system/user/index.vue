@@ -20,6 +20,10 @@
               property="user.nickname">
             </el-table-column>
             <el-table-column
+              label="手机"
+              property="user.phone">
+            </el-table-column>
+            <el-table-column
               fixed="right"
               label="操作"
               width="320">
@@ -67,6 +71,10 @@
               <li>
                 <span>名称</span>
                 <el-input v-model="userNickname" auto-complete="on" style="width: 310px;"></el-input>
+              </li>
+              <li>
+                <span>手机号</span>
+                <el-input v-model="phone" auto-complete="on" style="width: 310px;"></el-input>
               </li>
               <li>
                 <span>头像</span>
@@ -148,10 +156,12 @@ export default {
         account: '',
         user: {
           headimg: '',
-          nickname: ''
+          nickname: '',
+          phone: ''
         },
         userId: ''
       },
+      phone: '',
       userNickname: '',
       userHeadimg: '',
       headimgAttachmentId: '',
@@ -223,6 +233,7 @@ export default {
       this.addUserDialog = true
       this.addRuleForm.account = item.account
       this.addRuleForm.userId = item.userId
+      this.addRuleForm.phone = item.phone
       if (item.imgAttachment) {
         this.userHeadimg = item.imgAttachment.filepath
         this.fileList.push(item.imgAttachment)
@@ -239,9 +250,22 @@ export default {
         warning('请输入6到12位账号')
         return
       }
+      if (!this.userNickname) {
+        warning('名称不能为空')
+        return
+      }
+      let phoneReg = /^[1](([3][0-9])|([4][0,1,4-9])|([5][0-3,5-9])|([6][2,5,6,7])|([7][0-8])|([8][0-9])|([9][0-3,5-9]))[0-9]{8}$/
+      if (!this.phone) {
+        warning('手机账号不能为空')
+        return
+      } else if (!phoneReg.test(this.phone)) {
+        warning('请输入正确的手机格式')
+        return
+      }
       let user = {
         headimgAttachmentId: this.headimgAttachmentId,
-        nickname: this.userNickname
+        nickname: this.userNickname,
+        phone: this.phone
       }
       this.addRuleForm.user = user
       if (this.isEdit) {
@@ -271,7 +295,8 @@ export default {
         account: '',
         user: {
           headimg: '',
-          nickname: ''
+          nickname: '',
+          phone: ''
         },
         userId: ''
       }
@@ -352,6 +377,9 @@ export default {
         this.current = res.data.current
         this.pageSize = res.data.size
         this.total = res.data.total
+        if (res.data.records.length === 0) {
+          location.reload()
+        }
       })
     }
   },
@@ -424,7 +452,10 @@ export default {
           li {
             margin: 10px 0;
             span {
+              display: inline-block;
+              width: 80px;
               margin-right: 10px;
+              text-align: right;
             }
             .el-upload-list {
               .el-upload-list__item {
@@ -438,6 +469,20 @@ export default {
             }
           }
           li:first-child {
+            span:before {
+              content: '*';
+              color: #f00;
+              margin: 0 5px 0 -12px;
+            }
+          }
+          li:nth-child(2) {
+            span:before {
+              content: '*';
+              color: #f00;
+              margin: 0 5px 0 -12px;
+            }
+          }
+          li:nth-child(3) {
             span:before {
               content: '*';
               color: #f00;
