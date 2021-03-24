@@ -4,7 +4,7 @@
     <div class="user-container">
   <!-- 表格主体 -->
       <div class="content">
-        <div class="table1 el-col el-col-22 el-col-xs-22 el-col-sm-22 el-col-md-13 el-col-lg-13 el-col-xl-16">
+        <div class="table1 el-col el-col-22 el-col-xs-22 el-col-sm-22 el-col-md-15 el-col-lg-15 el-col-xl-16">
           <el-button type="primary" icon="el-icon-plus" size="mini" @click="addUser">添加</el-button>
           <el-table
             :data="tableData"
@@ -66,15 +66,15 @@
             <ul>
               <li>
                 <span>账号</span>
-                <el-input v-model="addRuleForm.account" auto-complete="on" style="width: 310px;"></el-input>
+                <el-input v-model="addRuleForm.account" auto-complete="on" style="width: 200px;"></el-input>
               </li>
               <li>
                 <span>名称</span>
-                <el-input v-model="userNickname" auto-complete="on" style="width: 310px;"></el-input>
+                <el-input v-model="userNickname" auto-complete="on" style="width: 200px;"></el-input>
               </li>
               <li>
                 <span>手机号</span>
-                <el-input v-model="phone" auto-complete="on" style="width: 310px;"></el-input>
+                <el-input v-model="phone" auto-complete="on" style="width: 200px;"></el-input>
               </li>
               <li>
                 <span>头像</span>
@@ -224,6 +224,7 @@ export default {
       this.isEdit = false
       this.addRuleForm = {}
       this.userNickname = ''
+      this.phone = ''
       this.fileList = []
     },
     // 修改用户
@@ -233,7 +234,8 @@ export default {
       this.addUserDialog = true
       this.addRuleForm.account = item.account
       this.addRuleForm.userId = item.userId
-      this.addRuleForm.phone = item.phone
+      this.addRuleForm.phone = item.user.phone
+      this.phone = item.user.phone
       if (item.imgAttachment) {
         this.userHeadimg = item.imgAttachment.filepath
         this.fileList.push(item.imgAttachment)
@@ -348,7 +350,6 @@ export default {
         apiAddUserRole({ userId: this.userId, roleId: val.roleId }).then(res => {
           success(res.msg)
           this.getUserList()
-          this.userId = ''
         })
           .catch(res => {
             error(res.msg)
@@ -358,7 +359,6 @@ export default {
         apiDelUserRole({ userId: this.userId, roleId: val.roleId }).then(res => {
           success(res.msg)
           this.getUserList()
-          this.userId = ''
         })
           .catch(res => {
             error(res.msg)
@@ -453,7 +453,7 @@ export default {
             margin: 10px 0;
             span {
               display: inline-block;
-              width: 80px;
+              width: 50px;
               margin-right: 10px;
               text-align: right;
             }

@@ -1,78 +1,80 @@
 <template>
   <div class="home">
-    <van-nav-bar title="安全隐患列表"  left-arrow @click-left="onClickLeft">
-      <template #right>
-        <!-- <van-button type="info" size="mini" @click="goRepair">我要添加</van-button> -->
-        <van-button type="info" icon="plus" size="small" @click="goRepair">添加</van-button>
-      </template>
-    </van-nav-bar>
-    <div class="home-container">
-      <van-tabs v-model="handleStatus" @click="changeHandleStatus" sticky>
-        <van-sticky :offset-top="43">
-          <div class="vanButtonGrounp">
-            <!-- <van-button v-for="(item, index) in buttonList" @change="changeHandleStatus" :key="index" :class="changePickerFlag * 1 === index ? 'van-button-activity' : ''"
-            size="small" @click="changePicker(item.type, index)">{{ item.typeName }}({{ item.count }})</van-button> -->
-            <!-- <van-switch v-model="checked" size="24px" /> -->
-            <van-cell center :title="switchVal" v-if="this.isShowSwitch">
-              <template #right-icon>
-                <van-switch @change="changeSwitch" v-model="checked" size="24" />
-              </template>
-            </van-cell>
-          </div> 
-        </van-sticky>
-        <!-- 未完成 -->
-        <van-tab name="false" title="未完成">
-          <van-list
-            v-model="loading"
-            :finished="finished"
-            finished-text="没有更多了"
-            @load="onLoad"
-          >
-            <ul>
-              <li v-for="(item, index) in riskList" :key="index" >
-                <dl>
-                  <dt>{{ index + 1 }}</dt>
-                  <dd>
-                    <p>{{ item.title }} <van-tag type="success">{{ item.levelLabel }}</van-tag></p>
-                    <span v-if="item.nowUserName">处理人：{{item.nowUserName}}</span>
-                  </dd>
-                </dl>
-                <div>
-                  <van-tag v-if="isShowTag(item)" type="warning">{{ item.typeLabel }}</van-tag>
-                  <van-button :type="quanxiankongzhiButton(item) ? 'info' : 'warning'" size="small" @click="goHandle(item, 1)">{{ quanxiankongzhiButton(item) ? '查看' : '处理' }}</van-button>
-                </div>
-              </li>
-            </ul>
-          </van-list>
-        </van-tab>
-        <!-- 已完成 -->
-        <van-tab name="true" title="已完成">
-          <van-list
-            v-model="loading"
-            :finished="finished"
-            finished-text="没有更多了"
-            @load="onLoad"
-          >
-            <ul>
-              <li v-for="(item, index) in riskList" :key="index" >
-                <dl>
-                  <dt>{{ index + 1 }}</dt>
-                  <dd>
-                    <p>{{ item.title }}</p>
-                    <span v-if="item.nowUserName">处理人：{{item.nowUserName}}</span>
-                  </dd>
-                </dl>
-                <div>
-                  <van-tag type="warning" v-if="isShowTag(item)">{{ item.typeLabel }}</van-tag>
-                  <van-button :type="quanxiankongzhiButton(item) ? 'info' : 'warning'" size="small" @click="goHandle(item, 2)">{{ quanxiankongzhiButton(item) ? '查看' : '处理' }}</van-button>
-                </div>
-              </li>
-            </ul>
-          </van-list>
-        </van-tab>
-      </van-tabs>
-      <!-- <div><van-empty image="network" description="网络错误或内容为空" /></div> -->
-    </div>
+    <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+      <van-nav-bar title="安全隐患列表"  left-arrow @click-left="onClickLeft">
+        <template #right>
+          <!-- <van-button type="info" size="mini" @click="goRepair">我要添加</van-button> -->
+          <van-button type="info" icon="plus" size="small" @click="goRepair">添加</van-button>
+        </template>
+      </van-nav-bar>
+      <div class="home-container">
+        <van-tabs v-model="handleStatus" @click="changeHandleStatus" sticky>
+          <van-sticky :offset-top="43">
+            <div class="vanButtonGrounp">
+              <!-- <van-button v-for="(item, index) in buttonList" @change="changeHandleStatus" :key="index" :class="changePickerFlag * 1 === index ? 'van-button-activity' : ''"
+              size="small" @click="changePicker(item.type, index)">{{ item.typeName }}({{ item.count }})</van-button> -->
+              <!-- <van-switch v-model="checked" size="24px" /> -->
+              <van-cell center :title="switchVal" v-if="this.isShowSwitch">
+                <template #right-icon>
+                  <van-switch @change="changeSwitch" v-model="checked" size="24" />
+                </template>
+              </van-cell>
+            </div> 
+          </van-sticky>
+          <!-- 未完成 -->
+          <van-tab name="false" title="未完成">
+            <van-list
+              v-model="loading"
+              :finished="finished"
+              finished-text="没有更多了"
+              @load="onLoad"
+            >
+              <ul>
+                <li v-for="(item, index) in riskList" :key="index" >
+                  <dl>
+                    <dt>{{ index + 1 }}</dt>
+                    <dd>
+                      <p>{{ item.title }} <van-tag type="success">{{ item.levelLabel }}</van-tag></p>
+                      <span v-if="item.nowUserName">处理人：{{item.nowUserName}}</span>
+                    </dd>
+                  </dl>
+                  <div>
+                    <van-tag v-if="isShowTag(item)" type="warning">{{ item.typeLabel }}</van-tag>
+                    <van-button :type="quanxiankongzhiButton(item) ? 'info' : 'warning'" size="small" @click="goHandle(item, 1)">{{ quanxiankongzhiButton(item) ? '查看' : '处理' }}</van-button>
+                  </div>
+                </li>
+              </ul>
+            </van-list>
+          </van-tab>
+          <!-- 已完成 -->
+          <van-tab name="true" title="已完成">
+            <van-list
+              v-model="loading"
+              :finished="finished"
+              finished-text="没有更多了"
+              @load="onLoad"
+            >
+              <ul>
+                <li v-for="(item, index) in riskList" :key="index" >
+                  <dl>
+                    <dt>{{ index + 1 }}</dt>
+                    <dd>
+                      <p>{{ item.title }}</p>
+                      <span v-if="item.nowUserName">处理人：{{item.nowUserName}}</span>
+                    </dd>
+                  </dl>
+                  <div>
+                    <van-tag type="warning" v-if="isShowTag(item)">{{ item.typeLabel }}</van-tag>
+                    <van-button :type="quanxiankongzhiButton(item) ? 'info' : 'warning'" size="small" @click="goHandle(item, 2)">{{ quanxiankongzhiButton(item) ? '查看' : '处理' }}</van-button>
+                  </div>
+                </li>
+              </ul>
+            </van-list>
+          </van-tab>
+        </van-tabs>
+        <!-- <div><van-empty image="network" description="网络错误或内容为空" /></div> -->
+      </div>
+    </van-pull-refresh>
   </div>
 </template>
 <script>
@@ -80,6 +82,7 @@ import { apiRiskPage } from '@/services/api/index'
 export default {
   data () {
     return {
+      isLoading: false,
       checked: false,
       switchVal: '全部',
       authority: [],
@@ -226,6 +229,13 @@ export default {
           this.finished = true
         }
       })
+    },
+    // 下拉刷新
+    async onRefresh () {
+      this.current = 1
+      this.riskList = []
+      await this.getRiskList()
+      this.isLoading = false
     },
     isShowTag (item) {
       let tagFlag = false

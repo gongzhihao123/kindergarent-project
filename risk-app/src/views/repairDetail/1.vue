@@ -4,9 +4,9 @@
     <van-nav-bar :title="title" fixed placeholder left-arrow @click-left="goBack"></van-nav-bar>
     <div class="dispose1Content">
       <h2 v-if="isFinish"><span>已完成！</span></h2>
-      <div class="logTextContent" v-if="duplicateFlag">
+      <!-- <div class="logTextContent" v-if="duplicateFlag">
         已申报，<span>案件名称：<b @click="goDeclaredDetail">{{ duplicateRiskTitle }}</b></span>
-      </div>
+      </div> -->
       <h2 v-if="!isFinish">当前处理人：<span>{{ nowUserName ? nowUserName : '无' }}</span></h2>
       <van-steps direction="vertical" :active="0">
         <van-step v-for="(item, index) in riskLogList" :key="index">

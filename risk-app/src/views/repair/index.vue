@@ -134,13 +134,9 @@ export default {
     },
     // 验证
     checkFrom () {
-      let titleTest = /^[\s\S]{6,12}$/
+      // let titleTest = /^[\s\S]{6,100}$/
       if (!this.title) {
         this.$toast('标题不能为空')
-        return false
-      }
-       else if (!titleTest.test(this.title)) {
-        this.$toast('标题6个12字符')
         return false
       }
       if (!this.riskLog.remark) {

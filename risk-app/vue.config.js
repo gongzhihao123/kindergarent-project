@@ -59,8 +59,8 @@ module.exports = {
     open: false, // 配置自动启动浏览器  open: 'Google Chrome'-默认启动谷歌
     // 配置多个代理
     proxy: {
-      '/kzhenyouapi': {
-        target: 'http://58.133.87.113:18080',
+      '/': {
+        target: 'http://58.133.87.112:18080',
         // target: 'http://123.57.161.229',
         ws: true, // 代理的WebSockets
         changeOrigin: true // 允许websockets跨域

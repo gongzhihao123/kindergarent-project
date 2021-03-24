@@ -27,9 +27,9 @@
           <van-button type="info" size="small" @click="onConfirm">提交</van-button>
         </li>
       </ul>
-      <div class="logTextContent" v-if="adminDuplicateFlag">
+      <!-- <div class="logTextContent" v-if="adminDuplicateFlag">
         已申报，<span>案件名称：<b @click="goDeclaredDetail">{{ adminDuplicateRiskTitle }}</b></span>
-      </div>
+      </div> -->
       <h2>当前处理人：<span>{{ nowUserName ? nowUserName : '无' }}</span></h2>
       <van-steps direction="vertical" :active="0">
         <van-step v-for="(item, index) in riskLogList" :key="index">
